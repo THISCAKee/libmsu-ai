@@ -1,0 +1,64 @@
+import { NextResponse } from "next/server";
+
+const formatTimestamp = () => {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Bangkok",
+    hour: "2-digit",
+    minute: "2-digit",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const getPart = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value ?? "";
+
+  return `${getPart("hour")}:${getPart("minute")} ${getPart("day")}/${getPart("month")}/${getPart("year")}`;
+};
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { name, role, studentId, year, faculty, major, department, action, platformName } = body;
+    const timestamp = formatTimestamp();
+    const payload = {
+      timestamp,
+      name,
+      role,
+      studentId: role === "นิสิต" ? studentId : "-",
+      year: role === "นิสิต" ? year : "-",
+      faculty: role === "นิสิต" ? faculty : "-",
+      major: role === "นิสิต" ? major : "-",
+      department: role === "บุคลากร" ? department : "-",
+      action: action || "Click AI Platform",
+      platformName: platformName || "-",
+    };
+
+    const scriptUrl = process.env.GOOGLE_SHEETS_SCRIPT_URL;
+
+    console.log("Logging entry:", payload);
+
+    if (scriptUrl) {
+      // Send data to Google Apps Script Web App
+      const response = await fetch(scriptUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to log to Google Sheets Apps Script:", await response.text());
+      }
+    } else {
+      console.warn("GOOGLE_SHEETS_SCRIPT_URL is not configured. Logged to console instead.");
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error("Logging error:", error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
