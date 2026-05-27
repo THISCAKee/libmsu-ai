@@ -51,7 +51,7 @@ body {
 
 .hub-logo-img {
   width: auto;
-  height: 60px;
+  height: 100px;
   object-fit: contain;
   margin-bottom: 8px;
 }
@@ -414,7 +414,7 @@ body {
 
 .auth-logo-img {
   width: auto;
-  height: 52px;
+  height: 90px;
   object-fit: contain;
 }
 

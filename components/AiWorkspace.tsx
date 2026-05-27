@@ -30,7 +30,11 @@ type AiWorkspaceProps = {
 
 const categories = ["All", "Chat", "Research", "Search"] as const;
 
-export function AiWorkspace({ platforms, userProfile, onLogout }: AiWorkspaceProps) {
+export function AiWorkspace({
+  platforms,
+  userProfile,
+  onLogout,
+}: AiWorkspaceProps) {
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
   const [query, setQuery] = useState("");
 
@@ -38,7 +42,8 @@ export function AiWorkspace({ platforms, userProfile, onLogout }: AiWorkspacePro
     const cleanQuery = query.trim().toLowerCase();
 
     return platforms.filter((platform) => {
-      const matchesCategory = category === "All" || platform.category === category;
+      const matchesCategory =
+        category === "All" || platform.category === category;
       const matchesQuery =
         cleanQuery.length === 0 ||
         [platform.name, platform.plan, platform.category, platform.description]
@@ -91,13 +96,20 @@ export function AiWorkspace({ platforms, userProfile, onLogout }: AiWorkspacePro
             <span className="user-name">{userProfile.name}</span>
             {userProfile.role === "นิสิต" && (
               <span className="user-subinfo">
-                {[`รหัส: ${userProfile.studentId}`, userProfile.year, userProfile.faculty, userProfile.major]
+                {[
+                  `รหัส: ${userProfile.studentId}`,
+                  userProfile.year,
+                  userProfile.faculty,
+                  userProfile.major,
+                ]
                   .filter(Boolean)
                   .join(" • ")}
               </span>
             )}
             {userProfile.role === "บุคลากร" && (
-              <span className="user-subinfo">หน่วยงาน: {userProfile.department}</span>
+              <span className="user-subinfo">
+                หน่วยงาน: {userProfile.department}
+              </span>
             )}
           </div>
           <button type="button" className="logout-btn" onClick={onLogout}>
@@ -106,14 +118,15 @@ export function AiWorkspace({ platforms, userProfile, onLogout }: AiWorkspacePro
         </div>
 
         <div className="hub-brand">
-          <img src="/logo.png" alt="MSU Logo" className="hub-logo-img" />
+          <img src="/logo.png" alt="MSU Logo" className="hub-logo-img h-20" />
           <div>
             <span className="hub-eyebrow">LIB AI PLATFORMS</span>
             <h1 className="hub-title">ศูนย์รวมเครื่องมือ AI</h1>
           </div>
         </div>
         <p className="hub-subtitle">
-          เลือกใช้งานเครื่องมือปัญญาประดิษฐ์ชั้นนำตามความเหมาะสมของงาน โดยเชื่อมต่อไปยังระบบหลักของแต่ละแพลตฟอร์มโดยตรง
+          เลือกใช้งานเครื่องมือปัญญาประดิษฐ์ชั้นนำตามความเหมาะสมของงาน
+          โดยเชื่อมต่อไปยังระบบหลักของแต่ละแพลตฟอร์มโดยตรง
         </p>
       </header>
 
@@ -158,7 +171,9 @@ export function AiWorkspace({ platforms, userProfile, onLogout }: AiWorkspacePro
           >
             <div className="card-header">
               <span className="category-badge">{platform.category}</span>
-              {platform.plan && <span className="plan-badge">{platform.plan}</span>}
+              {platform.plan && (
+                <span className="plan-badge">{platform.plan}</span>
+              )}
             </div>
 
             <div className="card-body">
