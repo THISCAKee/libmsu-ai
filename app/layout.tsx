@@ -11,6 +11,9 @@ const anuphan = Anuphan({
 export const metadata: Metadata = {
   title: "LIB AI Hub",
   description: "Central workspace for AI platforms.",
+  icons: {
+    icon: "/logotab.png",
+  },
 };
 
 export default function RootLayout({

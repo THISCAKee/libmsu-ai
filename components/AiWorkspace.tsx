@@ -125,8 +125,12 @@ export function AiWorkspace({
           </button>
         </div>
 
-        <div className="inline-flex flex-col items-center gap-3 mb-5">
-          <img src="/logo.png" alt="MSU Logo" className="w-auto h-[100px] object-contain mb-2" />
+        <div className="inline-flex flex-col items-center gap-1 mb-3">
+          <img
+            src="/logo.png"
+            alt="MSU Logo"
+            className="w-auto h-[100px] object-contain mb-2"
+          />
           <div>
             <span className="block text-[13px] font-bold tracking-[0.2em] text-[#2dd4bf] uppercase">
               LIB AI PLATFORMS
@@ -144,7 +148,10 @@ export function AiWorkspace({
 
       <section className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-center gap-5 mb-12 bg-slate-900/40 border border-white/8 p-4 rounded-[20px] backdrop-blur-[20px]">
         <div className="relative flex items-center w-full">
-          <Search className="absolute left-[18px] text-slate-500 pointer-events-none" size={20} />
+          <Search
+            className="absolute left-[18px] text-slate-500 pointer-events-none"
+            size={20}
+          />
           <input
             type="text"
             value={query}
@@ -210,7 +217,10 @@ export function AiWorkspace({
 
             <div className="flex items-center justify-between pt-[18px] border-t border-white/4 text-slate-500 text-sm font-medium transition-all duration-200 group-hover:text-white">
               <span>เปิดใช้งานแพลตฟอร์ม</span>
-              <ExternalLink size={16} className="transition-transform duration-200 group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-hover:text-[var(--accent-color)]" />
+              <ExternalLink
+                size={16}
+                className="transition-transform duration-200 group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-hover:text-[var(--accent-color)]"
+              />
             </div>
           </a>
         ))}
