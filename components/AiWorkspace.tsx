@@ -106,9 +106,7 @@ export function AiWorkspace({ platforms, userProfile, onLogout }: AiWorkspacePro
         </div>
 
         <div className="hub-brand">
-          <div className="hub-logo">
-            <Sparkles size={24} className="sparkle-icon" />
-          </div>
+          <img src="/logo.png" alt="MSU Logo" className="hub-logo-img" />
           <div>
             <span className="hub-eyebrow">LIB AI PLATFORMS</span>
             <h1 className="hub-title">ศูนย์รวมเครื่องมือ AI</h1>

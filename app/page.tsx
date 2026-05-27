@@ -226,9 +226,7 @@ export default function Home() {
     <div className="auth-container">
       <div className="auth-card animate-fade-in">
         <div className="auth-brand">
-          <div className="auth-logo">
-            <Sparkles size={28} className="sparkle-icon" />
-          </div>
+          <img src="/logo.png" alt="MSU Logo" className="auth-logo-img" />
           <div>
             <span className="auth-eyebrow">LIB AI SYSTEM</span>
             <h1 className="auth-title">ลงทะเบียนเข้าใช้งาน</h1>

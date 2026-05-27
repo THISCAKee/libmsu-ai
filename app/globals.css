@@ -49,16 +49,10 @@ body {
   margin-bottom: 20px;
 }
 
-.hub-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #0d9488, #6d28d9);
-  color: #ffffff;
-  box-shadow: 0 10px 30px rgba(13, 148, 136, 0.25);
+.hub-logo-img {
+  width: auto;
+  height: 60px;
+  object-fit: contain;
   margin-bottom: 8px;
 }
 
@@ -418,15 +412,10 @@ body {
   margin-bottom: 12px;
 }
 
-.auth-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #0d9488, #6d28d9);
-  color: #ffffff;
+.auth-logo-img {
+  width: auto;
+  height: 52px;
+  object-fit: contain;
 }
 
 .auth-eyebrow {
