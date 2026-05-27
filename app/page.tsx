@@ -223,25 +223,27 @@ export default function Home() {
   }
 
   return (
-    <div className="auth-container">
-      <div className="auth-card animate-fade-in">
-        <div className="auth-brand">
-          <img src="/logo.png" alt="MSU Logo" className="auth-logo-img" />
+    <div className="flex items-center justify-center min-h-100vh p-6 bg-[#0b0f19]">
+      <div className="w-full max-w-[480px] bg-slate-900/55 border border-white/8 rounded-3xl p-10 backdrop-blur-[20px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] relative before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:height-[4px] before:bg-gradient-to-r before:from-teal-600 before:to-violet-700 before:rounded-t-3xl animate-[fadeIn_0.4s_ease-out]">
+        <div className="flex items-center gap-4 mb-3">
+          <img src="/logo.png" alt="MSU Logo" className="w-auto h-[90px] object-contain" />
           <div>
-            <span className="auth-eyebrow">LIB AI SYSTEM</span>
-            <h1 className="auth-title">ลงทะเบียนเข้าใช้งาน</h1>
+            <span className="block text-[11px] font-bold tracking-[0.15em] text-[#2dd4bf] uppercase">
+              LIB AI SYSTEM
+            </span>
+            <h1 className="text-26px font-bold text-white">ลงทะเบียนเข้าใช้งาน</h1>
           </div>
         </div>
 
-        <p className="auth-subtitle">กรุณากรอกข้อมูลส่วนตัวเพื่อเข้าสู่ระบบศูนย์รวมเครื่องมือ AI</p>
+        <p className="text-slate-400 text-sm leading-normal mb-7">กรุณากรอกข้อมูลส่วนตัวเพื่อเข้าสู่ระบบศูนย์รวมเครื่องมือ AI</p>
 
-        {error && <div className="auth-error-badge">{error}</div>}
+        {error && <div className="bg-red-500/10 border border-red-500/25 text-red-500 p-3.5 rounded-lg text-xs font-semibold mb-6">{error}</div>}
 
-        <form onSubmit={handleRegister} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="name-input">
+        <form onSubmit={handleRegister} className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="name-input" className="flex items-center gap-2 text-slate-400 text-xs font-medium">
               <User size={16} />
-              <span>ชื่อ - นามสกุล</span>
+              <span className="text-slate-300">ชื่อ - นามสกุล</span>
             </label>
             <input
               id="name-input"
@@ -249,16 +251,17 @@ export default function Home() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="กรอกชื่อและนามสกุลจริง"
+              className="w-full p-4 text-sm rounded-lg border border-white/10 bg-slate-950/60 text-slate-50 outline-none transition-all duration-250 focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 focus:bg-slate-950/80"
               required
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="role-select">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="role-select" className="flex items-center gap-2 text-slate-400 text-xs font-medium">
               <ClipboardList size={16} />
-              <span>สถานะของคุณ</span>
+              <span className="text-slate-300">สถานะของคุณ</span>
             </label>
-            <div className="select-wrapper">
+            <div className="relative w-full after:content-['▼'] after:text-[10px] after:text-slate-400 after:absolute after:right-4 after:top-1/2 after:-translate-y-1/2 after:pointer-events-none">
               <select
                 id="role-select"
                 value={role}
@@ -266,19 +269,20 @@ export default function Home() {
                   setRole(e.target.value as "นิสิต" | "บุคลากร");
                   setError("");
                 }}
+                className="w-full p-4 pr-10 text-sm rounded-lg border border-white/10 bg-slate-950/60 text-slate-50 outline-none cursor-pointer appearance-none focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 focus:bg-slate-950/80"
               >
-                <option value="นิสิต">นิสิต</option>
-                <option value="บุคลากร">บุคลากร</option>
+                <option value="นิสิต" className="bg-slate-900 text-white">นิสิต</option>
+                <option value="บุคลากร" className="bg-slate-900 text-white">บุคลากร</option>
               </select>
             </div>
           </div>
 
           {role === "นิสิต" ? (
             <>
-              <div className="form-group">
-                <label htmlFor="student-id-input">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="student-id-input" className="flex items-center gap-2 text-slate-400 text-xs font-medium">
                   <GraduationCap size={16} />
-                  <span>รหัสนิสิต (11 หลัก)</span>
+                  <span className="text-slate-300">รหัสนิสิต (11 หลัก)</span>
                 </label>
                 <input
                   id="student-id-input"
@@ -287,23 +291,25 @@ export default function Home() {
                   value={studentId}
                   onChange={(e) => setStudentId(e.target.value.replace(/\D/g, ""))}
                   placeholder="เช่น 64010912345"
+                  className="w-full p-4 text-sm rounded-lg border border-white/10 bg-slate-950/60 text-slate-50 outline-none transition-all duration-250 focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 focus:bg-slate-950/80"
                   required
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="year-select">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="year-select" className="flex items-center gap-2 text-slate-400 text-xs font-medium">
                   <GraduationCap size={16} />
-                  <span>ชั้นปี</span>
+                  <span className="text-slate-300">ชั้นปี</span>
                 </label>
-                <div className="select-wrapper">
+                <div className="relative w-full after:content-['▼'] after:text-[10px] after:text-slate-400 after:absolute after:right-4 after:top-1/2 after:-translate-y-1/2 after:pointer-events-none">
                   <select
                     id="year-select"
                     value={year}
                     onChange={(e) => setYear(e.target.value)}
+                    className="w-full p-4 pr-10 text-sm rounded-lg border border-white/10 bg-slate-950/60 text-slate-50 outline-none cursor-pointer appearance-none focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 focus:bg-slate-950/80"
                   >
                     {years.map((y) => (
-                      <option key={y} value={y}>
+                      <option key={y} value={y} className="bg-slate-900 text-white">
                         {y}
                       </option>
                     ))}
@@ -311,19 +317,20 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="faculty-select">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="faculty-select" className="flex items-center gap-2 text-slate-400 text-xs font-medium">
                   <Building2 size={16} />
-                  <span>คณะสังกัด</span>
+                  <span className="text-slate-300">คณะสังกัด</span>
                 </label>
-                <div className="select-wrapper">
+                <div className="relative w-full after:content-['▼'] after:text-[10px] after:text-slate-400 after:absolute after:right-4 after:top-1/2 after:-translate-y-1/2 after:pointer-events-none">
                   <select
                     id="faculty-select"
                     value={faculty}
                     onChange={(e) => setFaculty(e.target.value)}
+                    className="w-full p-4 pr-10 text-sm rounded-lg border border-white/10 bg-slate-950/60 text-slate-50 outline-none cursor-pointer appearance-none focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 focus:bg-slate-950/80"
                   >
                     {faculties.map((f) => (
-                      <option key={f} value={f}>
+                      <option key={f} value={f} className="bg-slate-900 text-white">
                         {f}
                       </option>
                     ))}
@@ -331,10 +338,10 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="major-input">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="major-input" className="flex items-center gap-2 text-slate-400 text-xs font-medium">
                   <GraduationCap size={16} />
-                  <span>สาขาวิชา</span>
+                  <span className="text-slate-300">สาขาวิชา</span>
                 </label>
                 <input
                   id="major-input"
@@ -342,15 +349,16 @@ export default function Home() {
                   value={major}
                   onChange={(e) => setMajor(e.target.value)}
                   placeholder="เช่น วิทยาการคอมพิวเตอร์"
+                  className="w-full p-4 text-sm rounded-lg border border-white/10 bg-slate-950/60 text-slate-50 outline-none transition-all duration-250 focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 focus:bg-slate-950/80"
                   required
                 />
               </div>
             </>
           ) : (
-            <div className="form-group">
-              <label htmlFor="department-input">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="department-input" className="flex items-center gap-2 text-slate-400 text-xs font-medium">
                 <Building2 size={16} />
-                <span>ชื่อหน่วยงาน / กอง / คณะ</span>
+                <span className="text-slate-300">ชื่อหน่วยงาน / กอง / คณะ</span>
               </label>
               <input
                 id="department-input"
@@ -358,12 +366,16 @@ export default function Home() {
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
                 placeholder="เช่น สำนักคอมพิวเตอร์"
+                className="w-full p-4 text-sm rounded-lg border border-white/10 bg-slate-950/60 text-slate-50 outline-none transition-all duration-250 focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 focus:bg-slate-950/80"
                 required
               />
             </div>
           )}
 
-          <button type="submit" className="submit-btn">
+          <button
+            type="submit"
+            className="flex items-center justify-center gap-2.5 w-full p-4 rounded-xl border-none bg-gradient-to-r from-teal-600 to-teal-800 text-white text-base font-semibold cursor-pointer shadow-[0_8px_24px_rgba(13,148,136,0.25)] mt-2.5 transition-all duration-250 hover:translate-y-[-2px] hover:shadow-[0_12px_30px_rgba(13,148,136,0.35)] active:translate-y-0"
+          >
             <span>เข้าสู่ระบบหลัก</span>
             <ArrowRight size={18} />
           </button>
