@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Anuphan } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/components/AuthProvider";
 
 const anuphan = Anuphan({
   subsets: ["thai", "latin"],
@@ -18,12 +19,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="th" className={anuphan.variable}>
-      <body>{children}</body>
+    <html lang="th">
+      <body className={anuphan.className}>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
