@@ -64,8 +64,8 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.AUTH_MSU_CLIENT_SECRET!,
       authorization: {
         params: {
-          // บังคับให้เลือก account ทุกครั้ง
-          prompt: "select_account",
+          // บังคับให้ผู้ใช้กรอกอีเมลและรหัสผ่านใหม่ทุกครั้ง (ไม่เข้าสู่ระบบอัตโนมัติจากบัญชีที่ค้างในเบราว์เซอร์)
+          prompt: "login",
           hd: allowedEmailDomains[0] ?? "msu.ac.th",
         },
       },
