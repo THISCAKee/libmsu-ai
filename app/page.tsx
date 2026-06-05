@@ -171,7 +171,9 @@ export default function Home() {
     try {
       // ตั้งค่า flag ลงใน sessionStorage ก่อนที่จะ redirect ไปหน้า login
       sessionStorage.setItem("tab_session_active", "true");
-      await signIn("google", { callbackUrl: "/" });
+      // ส่ง prompt="login" และ max_age=0 ตรงๆ เพื่อบังคับ Google ให้กรอก password ทุกครั้ง
+      // แม้ว่าจะยัง login อยู่ใน Chrome ก็ตาม
+      await signIn("google", { callbackUrl: "/" }, { prompt: "login", max_age: "0" });
     } catch {
       setAuthError("ไม่สามารถเริ่มการเข้าสู่ระบบได้ กรุณาลองใหม่อีกครั้ง");
       setIsLoginPending(false);

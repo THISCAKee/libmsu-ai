@@ -64,8 +64,10 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.AUTH_MSU_CLIENT_SECRET!,
       authorization: {
         params: {
-          // บังคับให้ผู้ใช้กรอกอีเมลและรหัสผ่านใหม่ทุกครั้ง (ไม่เข้าสู่ระบบอัตโนมัติจากบัญชีที่ค้างในเบราว์เซอร์)
+          // บังคับให้ผู้ใช้กรอกอีเมลและรหัสผ่านใหม่ทุกครั้ง
+          // prompt="login" + max_age=0 → Google จะต้องกรอก password ทุกครั้ง แม้ยัง login ใน Chrome
           prompt: "login",
+          max_age: 0,
           hd: allowedEmailDomains[0] ?? "msu.ac.th",
         },
       },
