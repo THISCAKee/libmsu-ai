@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { AiWorkspace } from "@/components/AiWorkspace";
-import { OnboardingForm, type OnboardingData } from "@/components/OnboardingForm";
+import {
+  OnboardingForm,
+  type OnboardingData,
+} from "@/components/OnboardingForm";
 import { aiPlatforms } from "@/data/platforms";
 import {
   AlertCircle,
@@ -45,7 +48,10 @@ function saveProfile(email: string, data: OnboardingData) {
   }
 }
 
-function onboardingToUserProfile(name: string, data: OnboardingData): UserProfile {
+function onboardingToUserProfile(
+  name: string,
+  data: OnboardingData,
+): UserProfile {
   if (data.role === "บุคลากร") {
     return { name, role: "บุคลากร", department: data.department };
   }
@@ -103,7 +109,9 @@ export default function Home() {
       (async () => {
         await signOut({ redirect: false });
         // ส่งไป logout ที่ Google และให้กลับมาที่หน้าแรกของเรา
-        window.location.href = "https://accounts.google.com/Logout?continue=" + encodeURIComponent(window.location.origin);
+        window.location.href =
+          "https://accounts.google.com/Logout?continue=" +
+          encodeURIComponent(window.location.origin);
       })();
       return;
     }
@@ -131,7 +139,9 @@ export default function Home() {
       if (remaining <= 0) {
         (async () => {
           await signOut({ redirect: false });
-          window.location.href = "https://accounts.google.com/Logout?continue=" + encodeURIComponent(window.location.origin);
+          window.location.href =
+            "https://accounts.google.com/Logout?continue=" +
+            encodeURIComponent(window.location.origin);
         })();
       }
       return remaining;
@@ -145,7 +155,9 @@ export default function Home() {
     const timerId = setTimeout(() => {
       (async () => {
         await signOut({ redirect: false });
-        window.location.href = "https://accounts.google.com/Logout?continue=" + encodeURIComponent(window.location.origin);
+        window.location.href =
+          "https://accounts.google.com/Logout?continue=" +
+          encodeURIComponent(window.location.origin);
       })();
     }, remaining);
 
@@ -179,7 +191,9 @@ export default function Home() {
   const handleLogout = async () => {
     sessionStorage.removeItem("tab_session_active");
     await signOut({ redirect: false });
-    window.location.href = "https://accounts.google.com/Logout?continue=" + encodeURIComponent(window.location.origin);
+    window.location.href =
+      "https://accounts.google.com/Logout?continue=" +
+      encodeURIComponent(window.location.origin);
   };
 
   const handleOnboardingComplete = (data: OnboardingData) => {
@@ -194,7 +208,9 @@ export default function Home() {
       <main className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-50">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-teal-300" />
-          <p className="text-sm text-slate-300">กำลังตรวจสอบสถานะการเข้าสู่ระบบ...</p>
+          <p className="text-sm text-slate-300">
+            กำลังตรวจสอบสถานะการเข้าสู่ระบบ...
+          </p>
         </div>
       </main>
     );
@@ -247,13 +263,20 @@ export default function Home() {
       <div className="relative z-10 w-full max-w-sm">
         <div
           className="rounded-3xl border border-white/10 bg-white/[0.05] p-8 shadow-2xl backdrop-blur-2xl"
-          style={{ boxShadow: "0 0 80px 0 rgba(20,184,166,0.08), 0 32px 64px 0 rgba(0,0,0,0.5)" }}
+          style={{
+            boxShadow:
+              "0 0 80px 0 rgba(20,184,166,0.08), 0 32px 64px 0 rgba(0,0,0,0.5)",
+          }}
         >
           {/* Logo */}
           <div className="mb-8 flex flex-col items-center text-center">
             <div className="relative mb-5">
               <div className="h-20 w-20 rounded-2xl border border-white/10 bg-white/10 flex items-center justify-center shadow-xl">
-                <img src="/logo.png" alt="MSU Logo" className="h-14 w-auto object-contain" />
+                <img
+                  src="/logo.png"
+                  alt="MSU Logo"
+                  className="h-14 w-auto object-contain"
+                />
               </div>
               <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-slate-950 bg-teal-400 shadow-md shadow-teal-400/50" />
             </div>
@@ -263,10 +286,14 @@ export default function Home() {
               LIB AI System
             </div>
 
-            <h1 className="text-2xl font-bold tracking-tight text-white">เข้าสู่ระบบ</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-white">
+              เข้าสู่ระบบ
+            </h1>
             <p className="mt-2 text-sm leading-6 text-slate-400">
               สำหรับนิสิตและบุคลากร{" "}
-              <span className="text-teal-300 font-medium">มหาวิทยาลัยมหาสารคาม</span>
+              <span className="text-teal-300 font-medium">
+                มหาวิทยาลัยมหาสารคาม
+              </span>
             </p>
           </div>
 
@@ -274,16 +301,36 @@ export default function Home() {
           <div className="mb-6 space-y-2.5">
             <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-teal-500/15 text-teal-300">
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-white">Google Account มหาวิทยาลัย</p>
-                <p className="text-xs text-slate-500">ใช้อีเมล @msu.ac.th เท่านั้น</p>
+                <p className="text-sm font-medium text-white">
+                  Google Account มหาวิทยาลัย
+                </p>
+                <p className="text-xs text-slate-500">
+                  ใช้อีเมล @msu.ac.th เท่านั้น
+                </p>
               </div>
             </div>
 
@@ -292,8 +339,12 @@ export default function Home() {
                 <ShieldCheck className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white">ปลอดภัยด้วย OAuth 2.0</p>
-                <p className="text-xs text-slate-500">ไม่เก็บรหัสผ่าน — ยืนยันตัวตนผ่าน Google</p>
+                <p className="text-sm font-medium text-white">
+                  ปลอดภัยด้วย OAuth 2.0
+                </p>
+                <p className="text-xs text-slate-500">
+                  ไม่เก็บรหัสผ่าน — ยืนยันตัวตนผ่าน Google
+                </p>
               </div>
             </div>
 
@@ -302,8 +353,12 @@ export default function Home() {
                 <Users className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white">สำหรับนิสิตและบุคลากร</p>
-                <p className="text-xs text-slate-500">เข้าถึง AI Tools ที่ห้องสมุดคัดสรร</p>
+                <p className="text-sm font-medium text-white">
+                  สำหรับนิสิตและบุคลากร
+                </p>
+                <p className="text-xs text-slate-500">
+                  เข้าถึง AI Tools ที่ห้องสมุดคัดสรร
+                </p>
               </div>
             </div>
           </div>
@@ -332,11 +387,27 @@ export default function Home() {
               </>
             ) : (
               <>
-                <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#1a1a2e" />
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#1a1a2e" />
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#1a1a2e" />
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#1a1a2e" />
+                <svg
+                  className="h-4 w-4 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#1a1a2e"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#1a1a2e"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#1a1a2e"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#1a1a2e"
+                  />
                 </svg>
                 <span>เข้าสู่ระบบด้วย Google มหาวิทยาลัย</span>
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -350,7 +421,7 @@ export default function Home() {
         </div>
 
         <p className="mt-6 text-center text-xs text-slate-600">
-          สำนักวิทยบริการและเทคโนโลยีสารสนเทศ · มหาวิทยาลัยมหาสารคาม
+          สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม
         </p>
       </div>
     </main>
