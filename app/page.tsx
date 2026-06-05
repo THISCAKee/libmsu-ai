@@ -101,6 +101,50 @@ export default function Home() {
     setProfileLoaded(true);
   }, [status, session?.user?.email]);
 
+  /* Auto-logout หลัง 3 ชั่วโมง */
+  useEffect(() => {
+    if (status !== "authenticated" || !session) return;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const loginAt = (session as any).loginAt as number | undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const maxAge = (session as any).maxAge as number | undefined;
+
+    if (!loginAt || !maxAge) return;
+
+    const expiresAt = loginAt + maxAge * 1000;
+
+    function checkAndLogout() {
+      const remaining = expiresAt - Date.now();
+      if (remaining <= 0) {
+        signOut({ callbackUrl: "/" });
+      }
+      return remaining;
+    }
+
+    // ตรวจสอบทันที
+    const remaining = checkAndLogout();
+    if (remaining <= 0) return;
+
+    // ตั้ง timer นับถอยหลัง
+    const timerId = setTimeout(() => {
+      signOut({ callbackUrl: "/" });
+    }, remaining);
+
+    // ตรวจสอบอีกครั้งเมื่อกลับมาที่ tab (กรณี laptop sleep)
+    function handleVisibility() {
+      if (document.visibilityState === "visible") {
+        checkAndLogout();
+      }
+    }
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      clearTimeout(timerId);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [status, session]);
+
   const handleLogin = async () => {
     setAuthError(null);
     setIsLoginPending(true);
