@@ -96,6 +96,14 @@ export default function Home() {
   /* Load saved profile when session is ready */
   useEffect(() => {
     if (status !== "authenticated" || !session?.user?.email) return;
+
+    // ตรวจสอบว่ามี flag ใน sessionStorage หรือไม่ (ถ้าเปิด tab ใหม่/เปิด browser ใหม่ sessionStorage จะว่างเปล่า)
+    const isTabActive = sessionStorage.getItem("tab_session_active");
+    if (!isTabActive) {
+      signOut({ callbackUrl: "/" });
+      return;
+    }
+
     const saved = loadProfile(session.user.email);
     setProfile(saved);
     setProfileLoaded(true);
@@ -149,6 +157,8 @@ export default function Home() {
     setAuthError(null);
     setIsLoginPending(true);
     try {
+      // ตั้งค่า flag ลงใน sessionStorage ก่อนที่จะ redirect ไปหน้า login
+      sessionStorage.setItem("tab_session_active", "true");
       await signIn("google", { callbackUrl: "/" });
     } catch {
       setAuthError("ไม่สามารถเริ่มการเข้าสู่ระบบได้ กรุณาลองใหม่อีกครั้ง");
