@@ -50,7 +50,15 @@ const FACULTIES = [
   "วิทยาลัยดุริยางคศิลป์",
 ] as const;
 
-const YEARS = ["ชั้นปีที่ 1", "ชั้นปีที่ 2", "ชั้นปีที่ 3", "ชั้นปีที่ 4", "ชั้นปีที่ 5", "ชั้นปีที่ 6", "บัณฑิตศึกษา"];
+const YEARS = [
+  "ชั้นปีที่ 1",
+  "ชั้นปีที่ 2",
+  "ชั้นปีที่ 3",
+  "ชั้นปีที่ 4",
+  "ชั้นปีที่ 5",
+  "ชั้นปีที่ 6",
+  "บัณฑิตศึกษา",
+];
 
 /* ─── Sub-components ─────────────────────────────────────── */
 function FieldLabel({ children }: { children: React.ReactNode }) {
@@ -152,13 +160,17 @@ function RoleCard({
     >
       <div
         className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${
-          selected ? "bg-teal-400/20 text-teal-300" : "bg-white/[0.06] text-slate-400"
+          selected
+            ? "bg-teal-400/20 text-teal-300"
+            : "bg-white/[0.06] text-slate-400"
         }`}
       >
         {icon}
       </div>
       <div>
-        <p className={`text-sm font-semibold ${selected ? "text-teal-300" : "text-white"}`}>
+        <p
+          className={`text-sm font-semibold ${selected ? "text-teal-300" : "text-white"}`}
+        >
           {role}
         </p>
         <p className="mt-0.5 text-[11px] text-slate-500">{description}</p>
@@ -166,7 +178,13 @@ function RoleCard({
       {selected && (
         <span className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-teal-400 text-slate-950">
           <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none">
-            <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M2 6l3 3 5-5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </span>
       )}
@@ -249,7 +267,10 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
         {/* Card */}
         <div
           className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl"
-          style={{ boxShadow: "0 0 80px 0 rgba(20,184,166,0.06), 0 32px 64px 0 rgba(0,0,0,0.6)" }}
+          style={{
+            boxShadow:
+              "0 0 80px 0 rgba(20,184,166,0.06), 0 32px 64px 0 rgba(0,0,0,0.6)",
+          }}
         >
           {/* Header */}
           <div className="mb-8 flex flex-col items-center text-center">
@@ -257,8 +278,7 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
               <UserCheck className="h-7 w-7" />
             </div>
             <h1 className="text-xl font-bold text-white">
-              ยินดีต้อนรับ,{" "}
-              <span className="text-teal-300">{firstName}</span>!
+              ยินดีต้อนรับ, <span className="text-teal-300">{firstName}</span>!
             </h1>
             <p className="mt-2 text-sm text-slate-400">
               กรุณากรอกข้อมูลเพิ่มเติม เพื่อให้ระบบให้บริการคุณได้ดียิ่งขึ้น
@@ -403,7 +423,7 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
         </div>
 
         <p className="mt-6 text-center text-xs text-slate-600">
-          สำนักวิทยบริการและเทคโนโลยีสารสนเทศ · มหาวิทยาลัยมหาสารคาม
+          สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม
         </p>
       </div>
     </main>
