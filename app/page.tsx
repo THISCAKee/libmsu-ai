@@ -100,7 +100,11 @@ export default function Home() {
     // ตรวจสอบว่ามี flag ใน sessionStorage หรือไม่ (ถ้าเปิด tab ใหม่/เปิด browser ใหม่ sessionStorage จะว่างเปล่า)
     const isTabActive = sessionStorage.getItem("tab_session_active");
     if (!isTabActive) {
-      signOut({ callbackUrl: "/" });
+      (async () => {
+        await signOut({ redirect: false });
+        // ส่งไป logout ที่ Google และให้กลับมาที่หน้าแรกของเรา
+        window.location.href = "https://accounts.google.com/Logout?continue=" + encodeURIComponent(window.location.origin);
+      })();
       return;
     }
 
@@ -125,7 +129,10 @@ export default function Home() {
     function checkAndLogout() {
       const remaining = expiresAt - Date.now();
       if (remaining <= 0) {
-        signOut({ callbackUrl: "/" });
+        (async () => {
+          await signOut({ redirect: false });
+          window.location.href = "https://accounts.google.com/Logout?continue=" + encodeURIComponent(window.location.origin);
+        })();
       }
       return remaining;
     }
@@ -136,7 +143,10 @@ export default function Home() {
 
     // ตั้ง timer นับถอยหลัง
     const timerId = setTimeout(() => {
-      signOut({ callbackUrl: "/" });
+      (async () => {
+        await signOut({ redirect: false });
+        window.location.href = "https://accounts.google.com/Logout?continue=" + encodeURIComponent(window.location.origin);
+      })();
     }, remaining);
 
     // ตรวจสอบอีกครั้งเมื่อกลับมาที่ tab (กรณี laptop sleep)
@@ -166,7 +176,11 @@ export default function Home() {
     }
   };
 
-  const handleLogout = () => signOut({ callbackUrl: "/" });
+  const handleLogout = async () => {
+    sessionStorage.removeItem("tab_session_active");
+    await signOut({ redirect: false });
+    window.location.href = "https://accounts.google.com/Logout?continue=" + encodeURIComponent(window.location.origin);
+  };
 
   const handleOnboardingComplete = (data: OnboardingData) => {
     if (!session?.user?.email) return;
