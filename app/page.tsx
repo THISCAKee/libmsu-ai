@@ -107,11 +107,7 @@ export default function Home() {
     const isTabActive = sessionStorage.getItem("tab_session_active");
     if (!isTabActive) {
       (async () => {
-        await signOut({ redirect: false });
-        // ส่งไป logout ที่ Google และให้กลับมาที่หน้าแรกของเรา
-        window.location.href =
-          "https://accounts.google.com/Logout?continue=" +
-          encodeURIComponent(window.location.origin);
+        await signOut({ callbackUrl: "/" });
       })();
       return;
     }
@@ -138,10 +134,7 @@ export default function Home() {
       const remaining = expiresAt - Date.now();
       if (remaining <= 0) {
         (async () => {
-          await signOut({ redirect: false });
-          window.location.href =
-            "https://accounts.google.com/Logout?continue=" +
-            encodeURIComponent(window.location.origin);
+          await signOut({ callbackUrl: "/" });
         })();
       }
       return remaining;
@@ -154,10 +147,7 @@ export default function Home() {
     // ตั้ง timer นับถอยหลัง
     const timerId = setTimeout(() => {
       (async () => {
-        await signOut({ redirect: false });
-        window.location.href =
-          "https://accounts.google.com/Logout?continue=" +
-          encodeURIComponent(window.location.origin);
+        await signOut({ callbackUrl: "/" });
       })();
     }, remaining);
 
@@ -190,10 +180,7 @@ export default function Home() {
 
   const handleLogout = async () => {
     sessionStorage.removeItem("tab_session_active");
-    await signOut({ redirect: false });
-    window.location.href =
-      "https://accounts.google.com/Logout?continue=" +
-      encodeURIComponent(window.location.origin);
+    await signOut({ callbackUrl: "/" });
   };
 
   const handleOnboardingComplete = (data: OnboardingData) => {
