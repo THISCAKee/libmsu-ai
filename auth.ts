@@ -1,5 +1,5 @@
 import type { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 if (!process.env.NEXTAUTH_URL && process.env.AUTH_URL) {
   process.env.NEXTAUTH_URL = process.env.AUTH_URL;
@@ -59,17 +59,27 @@ export const authOptions: NextAuthOptions = {
   },
 
   providers: [
-    GoogleProvider({
-      clientId: process.env.AUTH_MSU_CLIENT_ID!,
-      clientSecret: process.env.AUTH_MSU_CLIENT_SECRET!,
-      authorization: {
-        params: {
-          // บังคับให้ผู้ใช้กรอกอีเมลและรหัสผ่านใหม่ทุกครั้ง
-          // prompt="login" + max_age=0 → Google จะต้องกรอก password ทุกครั้ง แม้ยัง login ใน Chrome
-          prompt: "login",
-          max_age: 0,
-          hd: allowedEmailDomains[0] ?? "msu.ac.th",
-        },
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        name: { label: "Name", type: "text" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email) return null;
+
+        const email = credentials.email.trim().toLowerCase();
+        const name = credentials.name?.trim() || email;
+
+        if (!isAllowedEmail(email)) {
+          throw new Error("AccessDenied");
+        }
+
+        return {
+          id: email,
+          email: email,
+          name: name,
+        };
       },
     }),
   ],
