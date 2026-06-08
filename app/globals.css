@@ -7,15 +7,13 @@
 
 @layer base {
   body {
-    background-color: #0b0f19;
-    color: #f8fafc;
+    background-color: #f8fafc;
+    color: #1e293b;
     font-family: var(--font-anuphun), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     min-height: 100vh;
-    background-image: 
-      radial-gradient(circle at 5% 10%, rgba(45, 212, 191, 0.08) 0%, transparent 35%),
-      radial-gradient(circle at 95% 90%, rgba(124, 58, 237, 0.06) 0%, transparent 45%);
-    background-attachment: fixed;
     letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -28,4 +26,14 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

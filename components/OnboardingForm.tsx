@@ -63,7 +63,7 @@ const YEARS = [
 /* ─── Sub-components ─────────────────────────────────────── */
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
-    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
       {children}
     </label>
   );
@@ -90,7 +90,7 @@ function TextInput({
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       required={required}
-      className="w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-slate-600 outline-none transition focus:border-teal-400/50 focus:bg-white/[0.08] focus:ring-2 focus:ring-teal-400/20"
+      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
     />
   );
 }
@@ -117,19 +117,18 @@ function SelectInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="w-full appearance-none rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 pr-10 text-sm text-white outline-none transition focus:border-teal-400/50 focus:bg-white/[0.08] focus:ring-2 focus:ring-teal-400/20 disabled:opacity-50"
-        style={{ colorScheme: "dark" }}
+        className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3 pr-10 text-sm text-slate-800 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100 disabled:opacity-50"
       >
-        <option value="" disabled className="bg-slate-900 text-slate-500">
+        <option value="" disabled className="text-slate-400">
           {placeholder ?? "เลือก..."}
         </option>
         {options.map((opt) => (
-          <option key={opt} value={opt} className="bg-slate-900 text-white">
+          <option key={opt} value={opt}>
             {opt}
           </option>
         ))}
       </select>
-      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
     </div>
   );
 }
@@ -152,31 +151,31 @@ function RoleCard({
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-1 flex-col items-center gap-2.5 rounded-2xl border p-5 text-center transition-all duration-200 ${
+      className={`flex flex-1 flex-col items-center gap-2.5 rounded-2xl border p-5 text-center transition-all duration-200 cursor-pointer ${
         selected
-          ? "border-teal-400/50 bg-teal-400/10 shadow-lg shadow-teal-400/10"
-          : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]"
+          ? "border-blue-400 bg-blue-50 shadow-md shadow-blue-100"
+          : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
       }`}
     >
       <div
         className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${
           selected
-            ? "bg-teal-400/20 text-teal-300"
-            : "bg-white/[0.06] text-slate-400"
+            ? "bg-blue-100 text-blue-600"
+            : "bg-slate-100 text-slate-500"
         }`}
       >
         {icon}
       </div>
       <div>
         <p
-          className={`text-sm font-semibold ${selected ? "text-teal-300" : "text-white"}`}
+          className={`text-sm font-semibold ${selected ? "text-blue-700" : "text-slate-800"}`}
         >
           {role}
         </p>
         <p className="mt-0.5 text-[11px] text-slate-500">{description}</p>
       </div>
       {selected && (
-        <span className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-teal-400 text-slate-950">
+        <span className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-white">
           <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none">
             <path
               d="M2 6l3 3 5-5"
@@ -248,39 +247,19 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
   const firstName = userName.split(" ")[0] || userName;
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-50 flex items-center justify-center px-4 py-12">
-      {/* Background decorations */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-60 -left-60 h-[700px] w-[700px] rounded-full bg-teal-500/8 blur-[140px]" />
-        <div className="absolute -bottom-60 -right-60 h-[600px] w-[600px] rounded-full bg-violet-600/8 blur-[140px]" />
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-      </div>
-
+    <main className="relative min-h-screen bg-[#f8fafc] flex items-center justify-center px-4 py-12">
       <div className="relative z-10 w-full max-w-lg">
         {/* Card */}
-        <div
-          className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl"
-          style={{
-            boxShadow:
-              "0 0 80px 0 rgba(20,184,166,0.06), 0 32px 64px 0 rgba(0,0,0,0.6)",
-          }}
-        >
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/50">
           {/* Header */}
           <div className="mb-8 flex flex-col items-center text-center">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-teal-400/20 bg-teal-400/10 text-teal-300">
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
               <UserCheck className="h-7 w-7" />
             </div>
-            <h1 className="text-xl font-bold text-white">
-              ยินดีต้อนรับ, <span className="text-teal-300">{firstName}</span>!
+            <h1 className="text-xl font-bold text-slate-900">
+              ยินดีต้อนรับ, <span className="text-blue-600">{firstName}</span>!
             </h1>
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-slate-500">
               กรุณากรอกข้อมูลเพิ่มเติม เพื่อให้ระบบให้บริการคุณได้ดียิ่งขึ้น
             </p>
           </div>
@@ -310,11 +289,11 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
             {/* Divider */}
             {role && (
               <div className="my-6 flex items-center gap-3">
-                <div className="h-px flex-1 bg-white/10" />
-                <span className="text-[11px] uppercase tracking-widest text-slate-600">
+                <div className="h-px flex-1 bg-slate-200" />
+                <span className="text-[11px] uppercase tracking-widest text-slate-400">
                   {role === "นิสิต" ? "ข้อมูลนิสิต" : "ข้อมูลบุคลากร"}
                 </span>
-                <div className="h-px flex-1 bg-white/10" />
+                <div className="h-px flex-1 bg-slate-200" />
               </div>
             )}
 
@@ -390,9 +369,9 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
 
             {/* Note */}
             {role && (
-              <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-blue-400/15 bg-blue-500/8 px-4 py-3">
-                <BookOpen className="mt-0.5 h-4 w-4 shrink-0 text-blue-400" />
-                <p className="text-[12px] leading-5 text-slate-400">
+              <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3">
+                <BookOpen className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
+                <p className="text-[12px] leading-5 text-slate-600">
                   ข้อมูลนี้ใช้เพื่อปรับประสบการณ์การใช้งาน AI Tools เท่านั้น
                   และจะถูกเก็บไว้เฉพาะในเครื่องของคุณ
                 </p>
@@ -404,9 +383,8 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
               id="btn-onboarding-submit"
               type="submit"
               disabled={!isValid() || submitting}
-              className="group relative mt-6 flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-teal-400 px-5 py-4 text-sm font-bold text-slate-950 shadow-lg shadow-teal-950/40 transition-all duration-200 hover:bg-teal-300 focus:outline-none focus:ring-4 focus:ring-teal-400/30 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-500"
+              className="group relative mt-6 flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-blue-600 px-5 py-4 text-sm font-bold text-white shadow-lg shadow-blue-200 transition-all duration-200 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none cursor-pointer"
             >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
               {submitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -422,7 +400,7 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
           </form>
         </div>
 
-        <p className="mt-6 text-center text-xs text-slate-600">
+        <p className="mt-6 text-center text-xs text-slate-400">
           สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม
         </p>
       </div>

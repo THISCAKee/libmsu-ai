@@ -12,9 +12,8 @@ import {
   AlertCircle,
   ArrowRight,
   Loader2,
-  ShieldCheck,
-  Sparkles,
-  Users,
+  Mail,
+  User,
 } from "lucide-react";
 
 /* ─── Types ─────────────────────────────────────────────── */
@@ -67,7 +66,7 @@ function onboardingToUserProfile(
 
 /* ─── Error messages ─────────────────────────────────────── */
 const ERROR_MESSAGES: Record<string, string> = {
-  OAuthSignin: "ไม่สามารถเชื่อมต่อ Google OAuth ได้ กรุณาตรวจสอบการตั้งค่า",
+  OAuthSignin: "ไม่สามารถเชื่อมต่อระบบได้ กรุณาตรวจสอบการตั้งค่า",
   OAuthCallback: "เกิดข้อผิดพลาดระหว่าง callback กรุณาลองใหม่อีกครั้ง",
   OAuthCreateAccount: "ไม่สามารถสร้างบัญชีได้ กรุณาลองใหม่",
   EmailCreateAccount: "ไม่สามารถสร้างบัญชีด้วยอีเมลนี้ได้",
@@ -227,10 +226,10 @@ export default function Home() {
   /* ── Loading ── */
   if (status === "loading" || (status === "authenticated" && !profileLoaded)) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-50">
+      <main className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-teal-300" />
-          <p className="text-sm text-slate-300">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+          <p className="text-sm text-slate-500">
             กำลังตรวจสอบสถานะการเข้าสู่ระบบ...
           </p>
         </div>
@@ -267,92 +266,46 @@ export default function Home() {
 
   /* ── Login page ── */
   return (
-    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-50 flex items-center justify-center px-4">
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -left-40 h-[600px] w-[600px] rounded-full bg-teal-500/10 blur-[120px]" />
-        <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
+    <main className="relative min-h-screen bg-[#f8fafc] flex items-center justify-center px-4">
+      {/* Subtle background decoration */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-blue-100/50 blur-[100px]" />
+        <div className="absolute -bottom-40 -left-40 h-[400px] w-[400px] rounded-full bg-indigo-100/40 blur-[100px]" />
       </div>
 
-      <div className="relative z-10 w-full max-w-sm">
-        <div
-          className="rounded-3xl border border-white/10 bg-white/[0.05] p-8 shadow-2xl backdrop-blur-2xl"
-          style={{
-            boxShadow:
-              "0 0 80px 0 rgba(20,184,166,0.08), 0 32px 64px 0 rgba(0,0,0,0.5)",
-          }}
-        >
+      <div className="relative z-10 w-full max-w-[420px]">
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/50">
           {/* Logo */}
           <div className="mb-8 flex flex-col items-center text-center">
             <div className="relative mb-5">
-              <div className="h-20 w-20 rounded-2xl border border-white/10 bg-white/10 flex items-center justify-center shadow-xl">
+              <div className="h-20 w-20 rounded-2xl border border-slate-100 bg-slate-50 flex items-center justify-center shadow-sm">
                 <img
                   src="/logo.png"
                   alt="MSU Logo"
                   className="h-14 w-auto object-contain"
                 />
               </div>
-              <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-slate-950 bg-teal-400 shadow-md shadow-teal-400/50" />
+              <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-white bg-blue-500 shadow-sm" />
             </div>
 
-            <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-teal-400/20 bg-teal-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-teal-300">
-              <Sparkles className="h-3 w-3" />
+            <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-blue-600">
               LIB AI System
             </div>
 
-            <h1 className="text-2xl font-bold tracking-tight text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
               เข้าสู่ระบบ
             </h1>
-            <p className="mt-2 text-sm leading-6 text-slate-400">
+            <p className="mt-2 text-sm leading-6 text-slate-500">
               สำหรับนิสิตและบุคลากร{" "}
-              <span className="text-teal-300 font-medium">
+              <span className="text-blue-600 font-medium">
                 มหาวิทยาลัยมหาสารคาม
               </span>
             </p>
           </div>
 
-          {/* Info cards */}
-          <div className="mb-6 space-y-2.5">
-            <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-teal-500/15 text-teal-300">
-                <ShieldCheck className="h-4 w-4" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">
-                  ยืนยันอีเมลมหาวิทยาลัย
-                </p>
-                <p className="text-xs text-slate-500">
-                  ใช้อีเมล @msu.ac.th เพื่อระบุตัวตน
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-500/15 text-violet-300">
-                <Users className="h-4 w-4" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">
-                  ระบบเครื่องคอมพิวเตอร์ส่วนรวม
-                </p>
-                <p className="text-xs text-slate-500">
-                  ป้องกันบัญชีปะปนบนบราวเซอร์สาธารณะ
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* Error from Auth */}
           {authError && (
-            <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-red-200">
+            <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
               <p className="text-xs leading-5">{authError}</p>
             </div>
@@ -369,29 +322,32 @@ export default function Home() {
             <div>
               <label
                 htmlFor="name-input"
-                className="mb-1.5 block text-xs font-medium text-slate-400"
+                className="mb-1.5 block text-xs font-semibold text-slate-600 uppercase tracking-wider"
               >
                 ชื่อ-นามสกุล
               </label>
-              <input
-                id="name-input"
-                type="text"
-                autoComplete="off"
-                placeholder="ชื่อ นามสกุล"
-                value={nameInput}
-                onChange={(e) => {
-                  setNameInput(e.target.value);
-                  setNameError(null);
-                }}
-                disabled={isLoginPending}
-                className={`w-full rounded-xl border px-4 py-3 text-sm text-white placeholder-slate-600 bg-white/[0.04] outline-none transition-all duration-200 focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-                  nameError
-                    ? "border-red-400/60 focus:ring-red-400/30"
-                    : "border-white/10 focus:border-teal-400/50 focus:ring-teal-400/20"
-                }`}
-              />
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <input
+                  id="name-input"
+                  type="text"
+                  autoComplete="off"
+                  placeholder="ชื่อ นามสกุล"
+                  value={nameInput}
+                  onChange={(e) => {
+                    setNameInput(e.target.value);
+                    setNameError(null);
+                  }}
+                  disabled={isLoginPending}
+                  className={`w-full rounded-xl border pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-400 bg-white outline-none transition-all duration-200 focus:ring-4 disabled:cursor-not-allowed disabled:opacity-50 ${
+                    nameError
+                      ? "border-red-300 focus:ring-red-100 focus:border-red-400"
+                      : "border-slate-200 focus:border-blue-400 focus:ring-blue-100"
+                  }`}
+                />
+              </div>
               {nameError && (
-                <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
+                <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-600">
                   <AlertCircle className="h-3 w-3 shrink-0" />
                   {nameError}
                 </p>
@@ -401,29 +357,32 @@ export default function Home() {
             <div>
               <label
                 htmlFor="email-input"
-                className="mb-1.5 block text-xs font-medium text-slate-400"
+                className="mb-1.5 block text-xs font-semibold text-slate-600 uppercase tracking-wider"
               >
                 อีเมลมหาวิทยาลัย
               </label>
-              <input
-                id="email-input"
-                type="email"
-                autoComplete="off"
-                placeholder="username@msu.ac.th"
-                value={emailInput}
-                onChange={(e) => {
-                  setEmailInput(e.target.value);
-                  setEmailError(null);
-                }}
-                disabled={isLoginPending}
-                className={`w-full rounded-xl border px-4 py-3 text-sm text-white placeholder-slate-600 bg-white/[0.04] outline-none transition-all duration-200 focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-                  emailError
-                    ? "border-red-400/60 focus:ring-red-400/30"
-                    : "border-white/10 focus:border-teal-400/50 focus:ring-teal-400/20"
-                }`}
-              />
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <input
+                  id="email-input"
+                  type="email"
+                  autoComplete="off"
+                  placeholder="username@msu.ac.th"
+                  value={emailInput}
+                  onChange={(e) => {
+                    setEmailInput(e.target.value);
+                    setEmailError(null);
+                  }}
+                  disabled={isLoginPending}
+                  className={`w-full rounded-xl border pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-400 bg-white outline-none transition-all duration-200 focus:ring-4 disabled:cursor-not-allowed disabled:opacity-50 ${
+                    emailError
+                      ? "border-red-300 focus:ring-red-100 focus:border-red-400"
+                      : "border-slate-200 focus:border-blue-400 focus:ring-blue-100"
+                  }`}
+                />
+              </div>
               {emailError && (
-                <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
+                <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-600">
                   <AlertCircle className="h-3 w-3 shrink-0" />
                   {emailError}
                 </p>
@@ -434,9 +393,8 @@ export default function Home() {
               id="btn-login"
               type="submit"
               disabled={isLoginPending}
-              className="group relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-teal-400 px-5 py-4 text-sm font-bold text-slate-950 shadow-lg shadow-teal-950/40 transition-all duration-200 hover:bg-teal-300 focus:outline-none focus:ring-4 focus:ring-teal-400/30 disabled:cursor-not-allowed disabled:bg-slate-600 disabled:text-slate-400"
+              className="group relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-blue-600 px-5 py-4 text-sm font-bold text-white shadow-lg shadow-blue-200 transition-all duration-200 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none cursor-pointer"
             >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
               {isLoginPending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -451,13 +409,18 @@ export default function Home() {
             </button>
           </form>
 
-          <p className="mt-5 text-center text-[11px] leading-5 text-slate-600">
+          <div className="mt-5 flex items-center gap-2 justify-center">
+            <div className="h-px flex-1 bg-slate-100" />
+            <span className="text-[10px] text-slate-400 uppercase tracking-widest">อีเมล @msu.ac.th เท่านั้น</span>
+            <div className="h-px flex-1 bg-slate-100" />
+          </div>
+
+          <p className="mt-4 text-center text-[11px] leading-5 text-slate-400">
             ระบบจัดทำขึ้นเพื่อการใช้บริการคอมพิวเตอร์และสื่อสารสนเทศของห้องสมุด
           </p>
-
         </div>
 
-        <p className="mt-6 text-center text-xs text-slate-600">
+        <p className="mt-6 text-center text-xs text-slate-400">
           สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม
         </p>
       </div>

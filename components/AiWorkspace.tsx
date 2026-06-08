@@ -4,11 +4,12 @@ import { useMemo, useState } from "react";
 import {
   ExternalLink,
   Search,
-  Sparkles,
   Compass,
   GraduationCap,
   MessageSquare,
   SearchCode,
+  LogOut,
+  ChevronRight,
 } from "lucide-react";
 import type { AiPlatform } from "@/data/platforms";
 
@@ -77,160 +78,202 @@ export function AiWorkspace({
   const getCategoryIcon = (cat: string) => {
     switch (cat) {
       case "Chat":
-        return <MessageSquare size={16} />;
+        return <MessageSquare size={15} />;
       case "Research":
-        return <GraduationCap size={16} />;
+        return <GraduationCap size={15} />;
       case "Search":
-        return <SearchCode size={16} />;
+        return <SearchCode size={15} />;
       default:
-        return <Compass size={16} />;
+        return <Compass size={15} />;
     }
   };
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 py-20">
-      <header className="mb-14 text-center">
-        <div className="flex justify-between items-center bg-slate-900/60 border border-white/8 px-6 py-3 rounded-2xl mb-10 backdrop-blur-md max-sm:flex-col max-sm:items-start max-sm:gap-3 max-sm:p-4">
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="bg-gradient-to-r from-teal-600 to-teal-800 text-white text-[11px] font-bold px-2 py-0.5 rounded-md uppercase">
-              {userProfile.role}
-            </span>
-            <span className="font-semibold text-white text-sm">
-              {userProfile.name}
-            </span>
-            {userProfile.role === "นิสิต" && (
-              <span className="text-slate-400 text-xs border-l border-white/15 pl-3 max-sm:border-l-0 max-sm:pl-0 max-sm:block max-sm:mt-1">
-                {[
-                  `รหัส: ${userProfile.studentId}`,
-                  userProfile.year,
-                  userProfile.faculty,
-                  userProfile.major,
-                ]
-                  .filter(Boolean)
-                  .join(" • ")}
+    <div className="min-h-screen bg-[#f8fafc]">
+      {/* Top navigation bar */}
+      <nav className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-slate-200/80">
+        <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-between h-16">
+          <div className="flex items-center gap-3">
+            <img
+              src="/logo.png"
+              alt="MSU Logo"
+              className="h-9 w-auto object-contain"
+            />
+            <div className="hidden sm:block">
+              <span className="text-sm font-bold text-slate-800 tracking-tight">
+                LIB AI Hub
               </span>
-            )}
-            {userProfile.role === "บุคลากร" && (
-              <span className="text-slate-400 text-xs border-l border-white/15 pl-3 max-sm:border-l-0 max-sm:pl-0 max-sm:block max-sm:mt-1">
-                หน่วยงาน: {userProfile.department}
+              <span className="text-[11px] text-slate-400 block leading-none">
+                สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม
               </span>
-            )}
+            </div>
           </div>
-          <button
-            type="button"
-            className="bg-transparent border border-white/15 text-slate-300 px-3.5 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all duration-250 hover:bg-white/8 hover:text-white hover:border-white/30 max-sm:w-full max-sm:text-center"
-            onClick={onLogout}
-          >
-            เปลี่ยนข้อมูลผู้ใช้
-          </button>
-        </div>
 
-        <div className="inline-flex flex-col items-center gap-1 mb-3">
-          <img
-            src="/logo.png"
-            alt="MSU Logo"
-            className="w-auto h-[100px] object-contain mb-2"
-          />
-          <div>
-            <span className="block text-[13px] font-bold tracking-[0.2em] text-[#2dd4bf] uppercase">
-              LIB AI PLATFORMS
-            </span>
-            <h1 className="text-[38px] font-bold tracking-tight bg-gradient-to-b from-white to-slate-300 bg-clip-text text-transparent">
-              ศูนย์รวมเครื่องมือ AI
-            </h1>
-          </div>
-        </div>
-        <p className="max-w-[600px] mx-auto text-base leading-relaxed text-slate-400 font-light">
-          เลือกใช้งานเครื่องมือปัญญาประดิษฐ์ชั้นนำตามความเหมาะสมของงาน
-          โดยเชื่อมต่อไปยังระบบหลักของแต่ละแพลตฟอร์มโดยตรง
-        </p>
-      </header>
-
-      <section className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-center gap-5 mb-12 bg-slate-900/40 border border-white/8 p-4 rounded-[20px] backdrop-blur-[20px]">
-        <div className="relative flex items-center w-full">
-          <Search
-            className="absolute left-[18px] text-slate-500 pointer-events-none"
-            size={20}
-          />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="ค้นหาตามชื่อ, รายละเอียด หรือประเภท..."
-            className="w-full py-3.5 pl-[50px] pr-4 text-[15px] rounded-xl border border-white/10 bg-slate-950/60 text-slate-50 outline-none transition-all duration-250 focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 focus:bg-slate-950/80"
-            aria-label="ค้นหาแพลตฟอร์ม AI"
-          />
-        </div>
-
-        <div className="flex gap-2">
-          {categories.map((item) => (
-            <button
-              key={item}
-              type="button"
-              className={`flex items-center gap-2 px-[18px] py-3 text-sm font-medium rounded-xl border border-transparent bg-transparent text-slate-400 cursor-pointer transition-all duration-200 hover:bg-white/4 hover:text-slate-50 ${
-                category === item
-                  ? "bg-white/8! text-teal-400! border-teal-500/20! shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
-                  : ""
-              }`}
-              onClick={() => setCategory(item)}
-            >
-              {getCategoryIcon(item)}
-              <span>{item === "All" ? "ทั้งหมด" : item}</span>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-        {filteredPlatforms.map((platform) => (
-          <a
-            key={platform.id}
-            href={platform.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex flex-col justify-between p-7 rounded-[20px] bg-slate-900/45 border border-white/8 text-inherit no-underline transition-all duration-300 relative overflow-hidden backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.2)] before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-[3px] before:bg-[var(--accent-color)] before:opacity-70 before:transition-opacity before:duration-200 hover:before:opacity-100 hover:-translate-y-1.5 hover:border-white/15 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.6)]"
-            style={{ "--accent-color": platform.accent } as React.CSSProperties}
-            onClick={() => handleCardClick(platform.name)}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <span className="text-[11px] font-semibold uppercase px-2.5 py-1 rounded-lg bg-white/5 text-slate-400 tracking-wider border border-white/3">
-                {platform.category}
-              </span>
-              {platform.plan && (
-                <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-teal-500/5 text-[#2dd4bf] border border-teal-500/15">
-                  {platform.plan}
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-2.5">
+              <div className="flex items-center gap-2 bg-slate-100 rounded-full px-3.5 py-1.5">
+                <div className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-[10px] font-bold">
+                  {userProfile.name.charAt(0)}
+                </div>
+                <span className="text-sm font-medium text-slate-700 max-w-[150px] truncate">
+                  {userProfile.name}
                 </span>
-              )}
-            </div>
-
-            <div className="mb-7 flex-grow">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent-color)] shadow-[0_0_10px_var(--accent-color)]" />
-                <h3 className="text-22px font-semibold text-white">
-                  {platform.name}
-                </h3>
+                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-100 text-blue-700 uppercase">
+                  {userProfile.role}
+                </span>
               </div>
-              <p className="text-sm leading-relaxed text-slate-400 font-light">
-                {platform.description}
-              </p>
             </div>
-
-            <div className="flex items-center justify-between pt-[18px] border-t border-white/4 text-slate-500 text-sm font-medium transition-all duration-200 group-hover:text-white">
-              <span>เปิดใช้งานแพลตฟอร์ม</span>
-              <ExternalLink
-                size={16}
-                className="transition-transform duration-200 group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-hover:text-[var(--accent-color)]"
-              />
-            </div>
-          </a>
-        ))}
-
-        {filteredPlatforms.length === 0 && (
-          <div className="col-span-full text-center py-12 text-slate-400 text-base">
-            <p>ไม่พบแพลตฟอร์ม AI ที่ตรงกับการค้นหา</p>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition-all duration-200 cursor-pointer"
+              onClick={onLogout}
+            >
+              <LogOut size={14} />
+              <span className="hidden sm:inline">ออกจากระบบ</span>
+            </button>
           </div>
-        )}
+        </div>
+      </nav>
+
+      <div className="max-w-[1200px] mx-auto px-6 py-10">
+        {/* Hero section */}
+        <header className="mb-10 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-3">
+            เลือกเครื่องมือ AI ที่เหมาะกับงานของคุณ
+          </h1>
+          <p className="max-w-[550px] mx-auto text-base text-slate-500 leading-relaxed">
+            เชื่อมต่อไปยังระบบหลักของแต่ละแพลตฟอร์มโดยตรง
+          </p>
+        </header>
+
+        {/* Search & Filters */}
+        <section className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mb-10">
+          <div className="relative flex-1">
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+              size={18}
+            />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="ค้นหาตามชื่อ, รายละเอียด หรือประเภท..."
+              className="w-full py-3 pl-11 pr-4 text-sm rounded-xl border border-slate-200 bg-white text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 shadow-sm"
+              aria-label="ค้นหาแพลตฟอร์ม AI"
+            />
+          </div>
+
+          <div className="flex gap-1.5 bg-slate-100 p-1 rounded-xl">
+            {categories.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+                  category === item
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+                onClick={() => setCategory(item)}
+              >
+                {getCategoryIcon(item)}
+                <span>{item === "All" ? "ทั้งหมด" : item}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Platform cards grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredPlatforms.map((platform) => (
+            <a
+              key={platform.id}
+              href={platform.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col bg-white rounded-2xl border border-slate-200/80 hover:border-slate-300 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+              onClick={() => handleCardClick(platform.name)}
+            >
+              {/* Card top accent */}
+              <div
+                className="h-1 w-full"
+                style={{ backgroundColor: platform.accent }}
+              />
+
+              <div className="flex flex-col flex-grow p-6">
+                {/* Top row: logo + plan badge */}
+                <div className="flex items-start justify-between mb-5">
+                  <div
+                    className="h-12 w-12 rounded-xl flex items-center justify-center shadow-sm border border-slate-100"
+                    style={{ backgroundColor: platform.accentLight }}
+                  >
+                    <img
+                      src={platform.logo}
+                      alt={`${platform.name} logo`}
+                      className="h-7 w-7 object-contain"
+                      onError={(e) => {
+                        // Fallback: ใช้ตัวอักษรแรกของชื่อ
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = "none";
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.innerHTML = `<span style="font-size:18px;font-weight:700;color:${platform.accent}">${platform.name.charAt(0)}</span>`;
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-semibold uppercase px-2 py-1 rounded-md bg-slate-100 text-slate-500 tracking-wider">
+                      {platform.category}
+                    </span>
+                    {platform.plan && (
+                      <span
+                        className="text-[10px] font-semibold px-2 py-1 rounded-md"
+                        style={{
+                          backgroundColor: platform.accentLight,
+                          color: platform.accent,
+                        }}
+                      >
+                        {platform.plan}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Name & description */}
+                <div className="mb-6 flex-grow">
+                  <h3 className="text-lg font-bold text-slate-900 mb-1.5">
+                    {platform.name}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-slate-500">
+                    {platform.description}
+                  </p>
+                </div>
+
+                {/* Footer action */}
+                <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-sm font-medium text-slate-400 transition-all duration-200 group-hover:text-slate-700">
+                  <span>เปิดใช้งาน</span>
+                  <div className="flex items-center gap-1 transition-transform duration-200 group-hover:translate-x-1">
+                    <ExternalLink size={14} />
+                    <ChevronRight size={14} />
+                  </div>
+                </div>
+              </div>
+            </a>
+          ))}
+
+          {filteredPlatforms.length === 0 && (
+            <div className="col-span-full text-center py-16 text-slate-400 text-sm">
+              <Search size={40} className="mx-auto mb-3 text-slate-300" />
+              <p>ไม่พบแพลตฟอร์ม AI ที่ตรงกับการค้นหา</p>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="text-center py-8 text-xs text-slate-400">
+        สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม
+      </footer>
     </div>
   );
 }
