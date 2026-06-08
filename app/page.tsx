@@ -85,6 +85,8 @@ export default function Home() {
   const { data: session, status } = useSession();
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoginPending, setIsLoginPending] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   // Profile stored locally per-email
   const [profile, setProfile] = useState<OnboardingData | null>(null);
@@ -166,14 +168,29 @@ export default function Home() {
   }, [status, session]);
 
   const handleLogin = async () => {
+    // ตรวจสอบ email ฝั่ง client ก่อน
+    const email = emailInput.trim().toLowerCase();
+    setEmailError(null);
     setAuthError(null);
+
+    if (!email) {
+      setEmailError("กรุณากรอกอีเมลของคุณ");
+      return;
+    }
+    if (!email.endsWith("@msu.ac.th")) {
+      setEmailError("กรุณาใช้อีเมลมหาวิทยาลัย @msu.ac.th เท่านั้น");
+      return;
+    }
+
     setIsLoginPending(true);
     try {
-      // ตั้งค่า flag ลงใน sessionStorage ก่อนที่จะ redirect ไปหน้า login
       sessionStorage.setItem("tab_session_active", "true");
-      // ส่ง prompt="login" และ max_age=0 ตรงๆ เพื่อบังคับ Google ให้กรอก password ทุกครั้ง
-      // แม้ว่าจะยัง login อยู่ใน Chrome ก็ตาม
-      await signIn("google", { callbackUrl: "/" }, { prompt: "login", max_age: "0" });
+      // ล็อคให้ Google ใช้อีเมลนี้เท่านั้น และบังคับให้กรอก password ทุกครั้ง
+      await signIn(
+        "google",
+        { callbackUrl: "/" },
+        { prompt: "login", max_age: "0", login_hint: email },
+      );
     } catch {
       setAuthError("ไม่สามารถเริ่มการเข้าสู่ระบบได้ กรุณาลองใหม่อีกครั้ง");
       setIsLoginPending(false);
@@ -352,7 +369,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Error */}
+          {/* Error from OAuth */}
           {authError && (
             <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-red-200">
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -360,53 +377,93 @@ export default function Home() {
             </div>
           )}
 
-          {/* CTA */}
-          <button
-            id="btn-google-login"
-            type="button"
-            onClick={handleLogin}
-            disabled={isLoginPending}
-            className="group relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-teal-400 px-5 py-4 text-sm font-bold text-slate-950 shadow-lg shadow-teal-950/40 transition-all duration-200 hover:bg-teal-300 focus:outline-none focus:ring-4 focus:ring-teal-400/30 disabled:cursor-not-allowed disabled:bg-slate-600 disabled:text-slate-400"
+          {/* Email Input Form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleLogin();
+            }}
+            className="space-y-3"
           >
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
-            {isLoginPending ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>กำลังเชื่อมต่อ...</span>
-              </>
-            ) : (
-              <>
-                <svg
-                  className="h-4 w-4 shrink-0"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    fill="#1a1a2e"
-                  />
-                  <path
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    fill="#1a1a2e"
-                  />
-                  <path
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    fill="#1a1a2e"
-                  />
-                  <path
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    fill="#1a1a2e"
-                  />
-                </svg>
-                <span>เข้าสู่ระบบด้วย Google มหาวิทยาลัย</span>
-                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </>
-            )}
-          </button>
+            <div>
+              <label
+                htmlFor="email-input"
+                className="mb-1.5 block text-xs font-medium text-slate-400"
+              >
+                อีเมลมหาวิทยาลัย
+              </label>
+              <input
+                id="email-input"
+                type="email"
+                autoComplete="off"
+                placeholder="username@msu.ac.th"
+                value={emailInput}
+                onChange={(e) => {
+                  setEmailInput(e.target.value);
+                  setEmailError(null);
+                }}
+                disabled={isLoginPending}
+                className={`w-full rounded-xl border px-4 py-3 text-sm text-white placeholder-slate-600 bg-white/[0.04] outline-none transition-all duration-200 focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                  emailError
+                    ? "border-red-400/60 focus:ring-red-400/30"
+                    : "border-white/10 focus:border-teal-400/50 focus:ring-teal-400/20"
+                }`}
+              />
+              {emailError && (
+                <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
+                  <AlertCircle className="h-3 w-3 shrink-0" />
+                  {emailError}
+                </p>
+              )}
+            </div>
+
+            <button
+              id="btn-google-login"
+              type="submit"
+              disabled={isLoginPending}
+              className="group relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-teal-400 px-5 py-4 text-sm font-bold text-slate-950 shadow-lg shadow-teal-950/40 transition-all duration-200 hover:bg-teal-300 focus:outline-none focus:ring-4 focus:ring-teal-400/30 disabled:cursor-not-allowed disabled:bg-slate-600 disabled:text-slate-400"
+            >
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
+              {isLoginPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>กำลังเชื่อมต่อ...</span>
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="h-4 w-4 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      fill="#1a1a2e"
+                    />
+                    <path
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      fill="#1a1a2e"
+                    />
+                    <path
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      fill="#1a1a2e"
+                    />
+                    <path
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      fill="#1a1a2e"
+                    />
+                  </svg>
+                  <span>ยืนยันด้วย Google มหาวิทยาลัย</span>
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </>
+              )}
+            </button>
+          </form>
 
           <p className="mt-5 text-center text-[11px] leading-5 text-slate-600">
             โดยการเข้าสู่ระบบ คุณยินยอมให้ระบบรับข้อมูลชื่อและอีเมลจาก Google
           </p>
+
         </div>
 
         <p className="mt-6 text-center text-xs text-slate-600">
