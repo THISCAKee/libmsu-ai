@@ -95,7 +95,7 @@ export function AiWorkspace({
         <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
             <img
-              src="/logo.png"
+              src="/logotab.png"
               alt="MSU Logo"
               className="h-9 w-auto object-contain"
             />

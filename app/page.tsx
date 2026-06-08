@@ -8,13 +8,7 @@ import {
   type OnboardingData,
 } from "@/components/OnboardingForm";
 import { aiPlatforms } from "@/data/platforms";
-import {
-  AlertCircle,
-  ArrowRight,
-  Loader2,
-  Mail,
-  User,
-} from "lucide-react";
+import { AlertCircle, ArrowRight, Loader2, Mail, User } from "lucide-react";
 
 /* ─── Types ─────────────────────────────────────────────── */
 type UserProfile = {
@@ -280,7 +274,7 @@ export default function Home() {
             <div className="relative mb-5">
               <div className="h-20 w-20 rounded-2xl border border-slate-100 bg-slate-50 flex items-center justify-center shadow-sm">
                 <img
-                  src="/logo.png"
+                  src="/logotab.png"
                   alt="MSU Logo"
                   className="h-14 w-auto object-contain"
                 />
@@ -411,7 +405,9 @@ export default function Home() {
 
           <div className="mt-5 flex items-center gap-2 justify-center">
             <div className="h-px flex-1 bg-slate-100" />
-            <span className="text-[10px] text-slate-400 uppercase tracking-widest">อีเมล @msu.ac.th เท่านั้น</span>
+            <span className="text-[10px] text-slate-400 uppercase tracking-widest">
+              อีเมล @msu.ac.th เท่านั้น
+            </span>
             <div className="h-px flex-1 bg-slate-100" />
           </div>
 
