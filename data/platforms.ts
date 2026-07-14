@@ -22,7 +22,7 @@ export const aiPlatforms: AiPlatform[] = [
     accent: "#10a37f",
     accentLight: "#ecfdf5",
     embedRisk: "high",
-    logo: "https://cdn.oaistatic.com/assets/favicon-o20kmmos.svg",
+    logo: "/logos/chatgpt.svg",
   },
   {
     id: "gemini",
@@ -35,7 +35,7 @@ export const aiPlatforms: AiPlatform[] = [
     accent: "#4285f4",
     accentLight: "#eff6ff",
     embedRisk: "high",
-    logo: "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690b6.svg",
+    logo: "/logos/gemini.png",
   },
   {
     id: "claude",
@@ -48,7 +48,7 @@ export const aiPlatforms: AiPlatform[] = [
     accent: "#d97706",
     accentLight: "#fffbeb",
     embedRisk: "high",
-    logo: "https://claude.ai/images/claude_app_icon.png",
+    logo: "/logos/claude.png",
   },
   {
     id: "consensus-pro",
@@ -60,7 +60,7 @@ export const aiPlatforms: AiPlatform[] = [
     accent: "#0d9488",
     accentLight: "#f0fdfa",
     embedRisk: "medium",
-    logo: "https://consensus.app/images/logo-min.svg",
+    logo: "/logos/consensus.png",
   },
 
   {
@@ -73,6 +73,6 @@ export const aiPlatforms: AiPlatform[] = [
     accent: "#7c3aed",
     accentLight: "#f5f3ff",
     embedRisk: "medium",
-    logo: "https://typeset.io/resources/content/images/2023/07/scispace-1.png",
+    logo: "/logos/scispace.svg",
   },
 ];
