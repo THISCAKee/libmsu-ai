@@ -323,7 +323,7 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
                       id="studentId"
                       value={studentId}
                       onChange={setStudentId}
-                      placeholder="เช่น 6512345678901"
+                      placeholder="เช่น 65123456789"
                       required
                     />
                   </div>

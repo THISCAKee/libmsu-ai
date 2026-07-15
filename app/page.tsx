@@ -8,6 +8,7 @@ import {
   type OnboardingData,
 } from "@/components/OnboardingForm";
 import { aiPlatforms } from "@/data/platforms";
+import { isValidFullName, normalizeFullName } from "@/lib/user-validation";
 import { AlertCircle, ArrowRight, Loader2, Mail, User } from "lucide-react";
 
 /* ─── Types ─────────────────────────────────────────────── */
@@ -69,6 +70,8 @@ const ERROR_MESSAGES: Record<string, string> = {
     "อีเมลนี้ถูกใช้กับวิธีอื่นอยู่แล้ว กรุณาเข้าสู่ระบบด้วยวิธีเดิม",
   AccessDenied:
     "ไม่มีสิทธิ์เข้าใช้งาน — กรุณาใช้อีเมลมหาวิทยาลัย @msu.ac.th เท่านั้น",
+  InvalidName:
+    "กรุณากรอกชื่อและนามสกุลด้วยตัวอักษรเท่านั้น โดยเว้นวรรคระหว่างชื่อกับนามสกุล",
   Verification: "ลิงก์ยืนยันหมดอายุ กรุณาลองใหม่",
   Default: "เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
 };
@@ -164,7 +167,7 @@ export default function Home() {
 
   const handleLogin = async () => {
     const email = emailInput.trim().toLowerCase();
-    const name = nameInput.trim();
+    const name = normalizeFullName(nameInput);
     setEmailError(null);
     setNameError(null);
     setAuthError(null);
@@ -173,6 +176,11 @@ export default function Home() {
 
     if (!name) {
       setNameError("กรุณากรอกชื่อ-นามสกุลของคุณ");
+      hasError = true;
+    } else if (!isValidFullName(name)) {
+      setNameError(
+        "กรุณากรอกชื่อและนามสกุลด้วยตัวอักษรเท่านั้น โดยเว้นวรรคระหว่างชื่อกับนามสกุล",
+      );
       hasError = true;
     }
 

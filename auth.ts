@@ -1,5 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { isValidFullName, normalizeFullName } from "@/lib/user-validation";
 
 if (!process.env.NEXTAUTH_URL && process.env.AUTH_URL) {
   process.env.NEXTAUTH_URL = process.env.AUTH_URL;
@@ -69,10 +70,14 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email) return null;
 
         const email = credentials.email.trim().toLowerCase();
-        const name = credentials.name?.trim() || email;
+        const name = normalizeFullName(credentials.name ?? "");
 
         if (!isAllowedEmail(email)) {
           throw new Error("AccessDenied");
+        }
+
+        if (!isValidFullName(name)) {
+          throw new Error("InvalidName");
         }
 
         return {

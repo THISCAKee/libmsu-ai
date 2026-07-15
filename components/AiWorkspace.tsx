@@ -59,7 +59,7 @@ export function AiWorkspace({
 
   const handleCardClick = async (platformName: string) => {
     try {
-      await fetch("/api/log", {
+      const response = await fetch("/api/log", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,6 +70,17 @@ export function AiWorkspace({
           platformName,
         }),
       });
+
+      const result = (await response.json().catch(() => null)) as {
+        success?: boolean;
+        error?: string;
+      } | null;
+
+      if (!response.ok || result?.success !== true) {
+        throw new Error(
+          result?.error || `Logging request failed with HTTP ${response.status}`,
+        );
+      }
     } catch (error) {
       console.error("Error logging platform selection:", error);
     }

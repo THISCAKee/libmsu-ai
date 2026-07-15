@@ -39,26 +39,49 @@ export async function POST(request: Request) {
 
     console.log("Logging entry:", payload);
 
-    if (scriptUrl) {
-      // Send data to Google Apps Script Web App
-      const response = await fetch(scriptUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+    if (!scriptUrl) {
+      console.error("GOOGLE_SHEETS_SCRIPT_URL is not configured.");
+      return NextResponse.json(
+        { success: false, error: "Logging service is not configured" },
+        { status: 503 },
+      );
+    }
 
-      if (!response.ok) {
-        console.error("Failed to log to Google Sheets Apps Script:", await response.text());
-      }
-    } else {
-      console.warn("GOOGLE_SHEETS_SCRIPT_URL is not configured. Logged to console instead.");
+    // Send data to Google Apps Script Web App
+    const response = await fetch(scriptUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const responseText = await response.text();
+    let scriptResult: { success?: boolean; error?: string } | null = null;
+
+    try {
+      scriptResult = JSON.parse(responseText);
+    } catch {
+      // ตรวจสอบด้านล่างในรูปแบบคำตอบที่ไม่ถูกต้องจาก Apps Script
+    }
+
+    if (!response.ok || scriptResult?.success !== true) {
+      const detail =
+        scriptResult?.error || responseText || `HTTP ${response.status}`;
+      console.error("Failed to log to Google Sheets Apps Script:", detail);
+      return NextResponse.json(
+        { success: false, error: "Failed to record usage" },
+        { status: 502 },
+      );
     }
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Logging error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json(
+      { success: false, error: message },
+      { status: 500 },
+    );
   }
 }
