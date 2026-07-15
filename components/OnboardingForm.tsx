@@ -10,6 +10,8 @@ import {
   Loader2,
   UserCheck,
 } from "lucide-react";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useLanguage } from "@/components/LanguageProvider";
 
 /* ─── Types ─────────────────────────────────────────────── */
 export type UserRole = "นิสิต" | "บุคลากร";
@@ -29,36 +31,111 @@ export type OnboardingData =
 
 /* ─── Constants ──────────────────────────────────────────── */
 const FACULTIES = [
-  "คณะวิทยาศาสตร์",
-  "คณะเทคโนโลยี",
-  "คณะวิศวกรรมศาสตร์",
-  "คณะสถาปัตยกรรมศาสตร์ผังเมืองและนฤมิตศิลป์",
-  "คณะสิ่งแวดล้อมและทรัพยากรศาสตร์",
-  "คณะวิทยาการสารสนเทศ",
-  "คณะพยาบาลศาสตร์",
-  "คณะเภสัชศาสตร์",
-  "คณะสาธารณสุขศาสตร์",
-  "คณะแพทยศาสตร์",
-  "คณะสัตวแพทยศาสตร์",
-  "คณะมนุษยศาสตร์และสังคมศาสตร์",
-  "คณะศึกษาศาสตร์",
-  "คณะการบัญชีและการจัดการ",
-  "คณะศิลปกรรมศาสตร์และวัฒนธรรมศาสตร์",
-  "คณะการท่องเที่ยวและการโรงแรม",
-  "วิทยาลัยการเมืองการปกครอง",
-  "คณะนิติศาสตร์",
-  "วิทยาลัยดุริยางคศิลป์",
+  ["คณะวิทยาศาสตร์", "Faculty of Science"],
+  ["คณะเทคโนโลยี", "Faculty of Technology"],
+  ["คณะวิศวกรรมศาสตร์", "Faculty of Engineering"],
+  [
+    "คณะสถาปัตยกรรมศาสตร์ผังเมืองและนฤมิตศิลป์",
+    "Faculty of Architecture, Urban Design and Creative Arts",
+  ],
+  [
+    "คณะสิ่งแวดล้อมและทรัพยากรศาสตร์",
+    "Faculty of Environment and Resource Studies",
+  ],
+  ["คณะวิทยาการสารสนเทศ", "Faculty of Informatics"],
+  ["คณะพยาบาลศาสตร์", "Faculty of Nursing"],
+  ["คณะเภสัชศาสตร์", "Faculty of Pharmacy"],
+  ["คณะสาธารณสุขศาสตร์", "Faculty of Public Health"],
+  ["คณะแพทยศาสตร์", "Faculty of Medicine"],
+  ["คณะสัตวแพทยศาสตร์", "Faculty of Veterinary Sciences"],
+  [
+    "คณะมนุษยศาสตร์และสังคมศาสตร์",
+    "Faculty of Humanities and Social Sciences",
+  ],
+  ["คณะศึกษาศาสตร์", "Faculty of Education"],
+  ["คณะการบัญชีและการจัดการ", "Faculty of Accountancy and Management"],
+  [
+    "คณะศิลปกรรมศาสตร์และวัฒนธรรมศาสตร์",
+    "Faculty of Fine-Applied Arts and Cultural Science",
+  ],
+  [
+    "คณะการท่องเที่ยวและการโรงแรม",
+    "Faculty of Tourism and Hotel Management",
+  ],
+  ["วิทยาลัยการเมืองการปกครอง", "College of Politics and Governance"],
+  ["คณะนิติศาสตร์", "Faculty of Law"],
+  ["วิทยาลัยดุริยางคศิลป์", "College of Music"],
 ] as const;
 
 const YEARS = [
-  "ชั้นปีที่ 1",
-  "ชั้นปีที่ 2",
-  "ชั้นปีที่ 3",
-  "ชั้นปีที่ 4",
-  "ชั้นปีที่ 5",
-  "ชั้นปีที่ 6",
-  "บัณฑิตศึกษา",
-];
+  ["ชั้นปีที่ 1", "Year 1"],
+  ["ชั้นปีที่ 2", "Year 2"],
+  ["ชั้นปีที่ 3", "Year 3"],
+  ["ชั้นปีที่ 4", "Year 4"],
+  ["ชั้นปีที่ 5", "Year 5"],
+  ["ชั้นปีที่ 6", "Year 6"],
+  ["บัณฑิตศึกษา", "Graduate student"],
+] as const;
+
+const ONBOARDING_COPY = {
+  th: {
+    welcome: "ยินดีต้อนรับ",
+    intro: "กรุณากรอกข้อมูลเพิ่มเติม เพื่อให้ระบบให้บริการคุณได้ดียิ่งขึ้น",
+    roleLabel: "สถานะของคุณ",
+    student: "นิสิต",
+    studentDescription: "นักศึกษา ม.มหาสารคาม",
+    staff: "บุคลากร",
+    staffDescription: "อาจารย์ / เจ้าหน้าที่",
+    studentInfo: "ข้อมูลนิสิต",
+    staffInfo: "ข้อมูลบุคลากร",
+    department: "หน่วยงาน / สำนัก / คณะ",
+    departmentPlaceholder: "เช่น สำนักวิทยบริการฯ, คณะวิทยาศาสตร์",
+    studentId: "รหัสนิสิต",
+    studentIdPlaceholder: "เช่น 65123456789",
+    year: "ชั้นปี",
+    chooseYear: "เลือกชั้นปี",
+    faculty: "คณะ",
+    chooseFaculty: "เลือกคณะ",
+    major: "สาขาวิชา",
+    majorPlaceholder: "เช่น วิทยาการคอมพิวเตอร์, การบัญชี",
+    privacy:
+      "ข้อมูลนี้ใช้เพื่อปรับประสบการณ์การใช้งาน AI Tools เท่านั้น และจะถูกเก็บไว้เฉพาะในเครื่องของคุณ",
+    saving: "กำลังบันทึก...",
+    enter: "เข้าสู่ระบบ LIB AI",
+    institution: "สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม",
+  },
+  en: {
+    welcome: "Welcome",
+    intro: "Please provide a few more details so we can serve you better.",
+    roleLabel: "Your role",
+    student: "Student",
+    studentDescription: "Mahasarakham University student",
+    staff: "Staff",
+    staffDescription: "Faculty member / Staff",
+    studentInfo: "Student information",
+    staffInfo: "Staff information",
+    department: "Department / Office / Faculty",
+    departmentPlaceholder: "e.g. Academic Resource Center, Faculty of Science",
+    studentId: "Student ID",
+    studentIdPlaceholder: "e.g. 65123456789",
+    year: "Year of study",
+    chooseYear: "Select year",
+    faculty: "Faculty",
+    chooseFaculty: "Select faculty",
+    major: "Major",
+    majorPlaceholder: "e.g. Computer Science, Accounting",
+    privacy:
+      "This information is used only to personalize your AI platform experience and is stored only on your device.",
+    saving: "Saving...",
+    enter: "Enter LIB AI",
+    institution: "Academic Resource Center, Mahasarakham University",
+  },
+} as const;
+
+type SelectOption = {
+  value: string;
+  label: string;
+};
 
 /* ─── Sub-components ─────────────────────────────────────── */
 function FieldLabel({ children }: { children: React.ReactNode }) {
@@ -106,7 +183,7 @@ function SelectInput({
   id: string;
   value: string;
   onChange: (v: string) => void;
-  options: readonly string[];
+  options: readonly SelectOption[];
   placeholder?: string;
   required?: boolean;
 }) {
@@ -123,8 +200,8 @@ function SelectInput({
           {placeholder ?? "เลือก..."}
         </option>
         {options.map((opt) => (
-          <option key={opt} value={opt}>
-            {opt}
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
           </option>
         ))}
       </select>
@@ -136,12 +213,14 @@ function SelectInput({
 /* ─── Role Card ──────────────────────────────────────────── */
 function RoleCard({
   role,
+  label,
   icon,
   description,
   selected,
   onClick,
 }: {
   role: UserRole;
+  label: string;
   icon: React.ReactNode;
   description: string;
   selected: boolean;
@@ -170,7 +249,7 @@ function RoleCard({
         <p
           className={`text-sm font-semibold ${selected ? "text-blue-700" : "text-slate-800"}`}
         >
-          {role}
+          {label}
         </p>
         <p className="mt-0.5 text-[11px] text-slate-500">{description}</p>
       </div>
@@ -198,6 +277,8 @@ interface OnboardingFormProps {
 }
 
 export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
+  const { language } = useLanguage();
+  const copy = ONBOARDING_COPY[language];
   const [role, setRole] = useState<UserRole | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -245,9 +326,18 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
   };
 
   const firstName = userName.split(" ")[0] || userName;
+  const facultyOptions = FACULTIES.map(([value, englishLabel]) => ({
+    value,
+    label: language === "th" ? value : englishLabel,
+  }));
+  const yearOptions = YEARS.map(([value, englishLabel]) => ({
+    value,
+    label: language === "th" ? value : englishLabel,
+  }));
 
   return (
     <main className="relative min-h-screen bg-[#f8fafc] flex items-center justify-center px-4 py-12">
+      <LanguageToggle className="absolute right-4 top-4 z-20" />
       <div className="relative z-10 w-full max-w-lg">
         {/* Card */}
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/50">
@@ -257,29 +347,32 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
               <UserCheck className="h-7 w-7" />
             </div>
             <h1 className="text-xl font-bold text-slate-900">
-              ยินดีต้อนรับ, <span className="text-blue-600">{firstName}</span>!
+              {copy.welcome},{" "}
+              <span className="text-blue-600">{firstName}</span>!
             </h1>
             <p className="mt-2 text-sm text-slate-500">
-              กรุณากรอกข้อมูลเพิ่มเติม เพื่อให้ระบบให้บริการคุณได้ดียิ่งขึ้น
+              {copy.intro}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} noValidate>
             {/* Step 1: Role selection */}
             <div className="mb-6">
-              <FieldLabel>สถานะของคุณ</FieldLabel>
+              <FieldLabel>{copy.roleLabel}</FieldLabel>
               <div className="flex gap-3">
                 <RoleCard
                   role="นิสิต"
+                  label={copy.student}
                   icon={<GraduationCap className="h-5 w-5" />}
-                  description="นักศึกษา ม.มหาสารคาม"
+                  description={copy.studentDescription}
                   selected={role === "นิสิต"}
                   onClick={() => setRole("นิสิต")}
                 />
                 <RoleCard
                   role="บุคลากร"
+                  label={copy.staff}
                   icon={<Building2 className="h-5 w-5" />}
-                  description="อาจารย์ / เจ้าหน้าที่"
+                  description={copy.staffDescription}
                   selected={role === "บุคลากร"}
                   onClick={() => setRole("บุคลากร")}
                 />
@@ -291,7 +384,7 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
               <div className="my-6 flex items-center gap-3">
                 <div className="h-px flex-1 bg-slate-200" />
                 <span className="text-[11px] uppercase tracking-widest text-slate-400">
-                  {role === "นิสิต" ? "ข้อมูลนิสิต" : "ข้อมูลบุคลากร"}
+                  {role === "นิสิต" ? copy.studentInfo : copy.staffInfo}
                 </span>
                 <div className="h-px flex-1 bg-slate-200" />
               </div>
@@ -301,12 +394,12 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
             {role === "บุคลากร" && (
               <div className="space-y-4">
                 <div>
-                  <FieldLabel>หน่วยงาน / สำนัก / คณะ</FieldLabel>
+                  <FieldLabel>{copy.department}</FieldLabel>
                   <TextInput
                     id="department"
                     value={department}
                     onChange={setDepartment}
-                    placeholder="เช่น สำนักวิทยบริการฯ, คณะวิทยาศาสตร์"
+                    placeholder={copy.departmentPlaceholder}
                     required
                   />
                 </div>
@@ -318,49 +411,49 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <FieldLabel>รหัสนิสิต</FieldLabel>
+                    <FieldLabel>{copy.studentId}</FieldLabel>
                     <TextInput
                       id="studentId"
                       value={studentId}
                       onChange={setStudentId}
-                      placeholder="เช่น 65123456789"
+                      placeholder={copy.studentIdPlaceholder}
                       required
                     />
                   </div>
                   <div>
-                    <FieldLabel>ชั้นปี</FieldLabel>
+                    <FieldLabel>{copy.year}</FieldLabel>
                     <SelectInput
                       id="year"
                       value={year}
                       onChange={setYear}
-                      options={YEARS}
-                      placeholder="เลือกชั้นปี"
+                      options={yearOptions}
+                      placeholder={copy.chooseYear}
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <FieldLabel>คณะ</FieldLabel>
+                  <FieldLabel>{copy.faculty}</FieldLabel>
                   <SelectInput
                     id="faculty"
                     value={faculty}
                     onChange={(v) => {
                       setFaculty(v);
                     }}
-                    options={FACULTIES}
-                    placeholder="เลือกคณะ"
+                    options={facultyOptions}
+                    placeholder={copy.chooseFaculty}
                     required
                   />
                 </div>
 
                 <div>
-                  <FieldLabel>สาขาวิชา</FieldLabel>
+                  <FieldLabel>{copy.major}</FieldLabel>
                   <TextInput
                     id="major"
                     value={major}
                     onChange={setMajor}
-                    placeholder="เช่น วิทยาการคอมพิวเตอร์, การบัญชี"
+                    placeholder={copy.majorPlaceholder}
                     required
                   />
                 </div>
@@ -372,8 +465,7 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
               <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3">
                 <BookOpen className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
                 <p className="text-[12px] leading-5 text-slate-600">
-                  ข้อมูลนี้ใช้เพื่อปรับประสบการณ์การใช้งาน AI Tools เท่านั้น
-                  และจะถูกเก็บไว้เฉพาะในเครื่องของคุณ
+                  {copy.privacy}
                 </p>
               </div>
             )}
@@ -388,11 +480,11 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
               {submitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>กำลังบันทึก...</span>
+                  <span>{copy.saving}</span>
                 </>
               ) : (
                 <>
-                  <span>เข้าสู่ระบบ LIB AI</span>
+                  <span>{copy.enter}</span>
                   <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </>
               )}
@@ -401,7 +493,7 @@ export function OnboardingForm({ userName, onComplete }: OnboardingFormProps) {
         </div>
 
         <p className="mt-6 text-center text-xs text-slate-400">
-          สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม
+          {copy.institution}
         </p>
       </div>
     </main>

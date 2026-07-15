@@ -12,6 +12,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import type { AiPlatform } from "@/data/platforms";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useLanguage } from "@/components/LanguageProvider";
 
 type UserProfile = {
   name: string;
@@ -31,11 +33,52 @@ type AiWorkspaceProps = {
 
 const categories = ["All", "Chat", "Research", "Search"] as const;
 
+const WORKSPACE_COPY = {
+  th: {
+    institution: "สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม",
+    student: "นิสิต",
+    staff: "บุคลากร",
+    logout: "ออกจากระบบ",
+    title: "เลือกเครื่องมือ AI ที่เหมาะกับงานของคุณ",
+    subtitle: "เชื่อมต่อไปยังระบบหลักของแต่ละแพลตฟอร์มโดยตรง",
+    searchPlaceholder: "ค้นหาตามชื่อ, รายละเอียด หรือประเภท...",
+    searchLabel: "ค้นหาแพลตฟอร์ม AI",
+    open: "เปิดใช้งาน",
+    noResults: "ไม่พบแพลตฟอร์ม AI ที่ตรงกับการค้นหา",
+    categories: {
+      All: "ทั้งหมด",
+      Chat: "สนทนา",
+      Research: "วิจัย",
+      Search: "ค้นหา",
+    },
+  },
+  en: {
+    institution: "Academic Resource Center, Mahasarakham University",
+    student: "Student",
+    staff: "Staff",
+    logout: "Sign out",
+    title: "Choose the right AI platform for your work",
+    subtitle: "Connect directly to each platform's official service.",
+    searchPlaceholder: "Search by name, description, or category...",
+    searchLabel: "Search AI platforms",
+    open: "Open platform",
+    noResults: "No AI platforms match your search.",
+    categories: {
+      All: "All",
+      Chat: "Chat",
+      Research: "Research",
+      Search: "Search",
+    },
+  },
+} as const;
+
 export function AiWorkspace({
   platforms,
   userProfile,
   onLogout,
 }: AiWorkspaceProps) {
+  const { language } = useLanguage();
+  const copy = WORKSPACE_COPY[language];
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
   const [query, setQuery] = useState("");
 
@@ -47,7 +90,13 @@ export function AiWorkspace({
         category === "All" || platform.category === category;
       const matchesQuery =
         cleanQuery.length === 0 ||
-        [platform.name, platform.plan, platform.category, platform.description]
+        [
+          platform.name,
+          platform.plan,
+          platform.category,
+          platform.description.th,
+          platform.description.en,
+        ]
           .filter(Boolean)
           .join(" ")
           .toLowerCase()
@@ -115,12 +164,13 @@ export function AiWorkspace({
                 LIB AI Hub
               </span>
               <span className="text-[11px] text-slate-400 block leading-none">
-                สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม
+                {copy.institution}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
+            <LanguageToggle />
             <div className="hidden md:flex items-center gap-2.5">
               <div className="flex items-center gap-2 bg-slate-100 rounded-full px-3.5 py-1.5">
                 <div className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-[10px] font-bold">
@@ -130,7 +180,7 @@ export function AiWorkspace({
                   {userProfile.name}
                 </span>
                 <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-100 text-blue-700 uppercase">
-                  {userProfile.role}
+                  {userProfile.role === "นิสิต" ? copy.student : copy.staff}
                 </span>
               </div>
             </div>
@@ -140,7 +190,7 @@ export function AiWorkspace({
               onClick={onLogout}
             >
               <LogOut size={14} />
-              <span className="hidden sm:inline">ออกจากระบบ</span>
+              <span className="hidden sm:inline">{copy.logout}</span>
             </button>
           </div>
         </div>
@@ -150,10 +200,10 @@ export function AiWorkspace({
         {/* Hero section */}
         <header className="mb-10 text-center">
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-3">
-            เลือกเครื่องมือ AI ที่เหมาะกับงานของคุณ
+            {copy.title}
           </h1>
           <p className="max-w-[550px] mx-auto text-base text-slate-500 leading-relaxed">
-            เชื่อมต่อไปยังระบบหลักของแต่ละแพลตฟอร์มโดยตรง
+            {copy.subtitle}
           </p>
         </header>
 
@@ -168,9 +218,9 @@ export function AiWorkspace({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="ค้นหาตามชื่อ, รายละเอียด หรือประเภท..."
+              placeholder={copy.searchPlaceholder}
               className="w-full py-3 pl-11 pr-4 text-sm rounded-xl border border-slate-200 bg-white text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 shadow-sm"
-              aria-label="ค้นหาแพลตฟอร์ม AI"
+              aria-label={copy.searchLabel}
             />
           </div>
 
@@ -187,7 +237,7 @@ export function AiWorkspace({
                 onClick={() => setCategory(item)}
               >
                 {getCategoryIcon(item)}
-                <span>{item === "All" ? "ทั้งหมด" : item}</span>
+                <span>{copy.categories[item]}</span>
               </button>
             ))}
           </div>
@@ -256,13 +306,13 @@ export function AiWorkspace({
                     {platform.name}
                   </h3>
                   <p className="text-sm leading-relaxed text-slate-500">
-                    {platform.description}
+                      {platform.description[language]}
                   </p>
                 </div>
 
                 {/* Footer action */}
                 <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-sm font-medium text-slate-400 transition-all duration-200 group-hover:text-slate-700">
-                  <span>เปิดใช้งาน</span>
+                  <span>{copy.open}</span>
                   <div className="flex items-center gap-1 transition-transform duration-200 group-hover:translate-x-1">
                     <ExternalLink size={14} />
                     <ChevronRight size={14} />
@@ -275,7 +325,7 @@ export function AiWorkspace({
           {filteredPlatforms.length === 0 && (
             <div className="col-span-full text-center py-16 text-slate-400 text-sm">
               <Search size={40} className="mx-auto mb-3 text-slate-300" />
-              <p>ไม่พบแพลตฟอร์ม AI ที่ตรงกับการค้นหา</p>
+              <p>{copy.noResults}</p>
             </div>
           )}
         </div>
@@ -283,7 +333,7 @@ export function AiWorkspace({
 
       {/* Footer */}
       <footer className="text-center py-8 text-xs text-slate-400">
-        สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม
+        {copy.institution}
       </footer>
     </div>
   );

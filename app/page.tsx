@@ -9,6 +9,11 @@ import {
 } from "@/components/OnboardingForm";
 import { aiPlatforms } from "@/data/platforms";
 import { isValidFullName, normalizeFullName } from "@/lib/user-validation";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import {
+  type Language,
+  useLanguage,
+} from "@/components/LanguageProvider";
 import { AlertCircle, ArrowRight, Loader2, Mail, User } from "lucide-react";
 
 /* ─── Types ─────────────────────────────────────────────── */
@@ -60,31 +65,87 @@ function onboardingToUserProfile(
 }
 
 /* ─── Error messages ─────────────────────────────────────── */
-const ERROR_MESSAGES: Record<string, string> = {
-  OAuthSignin: "ไม่สามารถเชื่อมต่อระบบได้ กรุณาตรวจสอบการตั้งค่า",
-  OAuthCallback: "เกิดข้อผิดพลาดระหว่าง callback กรุณาลองใหม่อีกครั้ง",
-  OAuthCreateAccount: "ไม่สามารถสร้างบัญชีได้ กรุณาลองใหม่",
-  EmailCreateAccount: "ไม่สามารถสร้างบัญชีด้วยอีเมลนี้ได้",
-  Callback: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
-  OAuthAccountNotLinked:
-    "อีเมลนี้ถูกใช้กับวิธีอื่นอยู่แล้ว กรุณาเข้าสู่ระบบด้วยวิธีเดิม",
-  AccessDenied:
-    "ไม่มีสิทธิ์เข้าใช้งาน — กรุณาใช้อีเมลมหาวิทยาลัย @msu.ac.th เท่านั้น",
-  InvalidName:
-    "กรุณากรอกชื่อและนามสกุลด้วยตัวอักษรเท่านั้น โดยเว้นวรรคระหว่างชื่อกับนามสกุล",
-  Verification: "ลิงก์ยืนยันหมดอายุ กรุณาลองใหม่",
-  Default: "เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
+const AUTH_ERROR_MESSAGES: Record<string, Record<Language, string>> = {
+  OAuthSignin: {
+    th: "ไม่สามารถเชื่อมต่อระบบได้ กรุณาตรวจสอบการตั้งค่า",
+    en: "Unable to connect to the authentication service. Please check the configuration.",
+  },
+  OAuthCallback: {
+    th: "เกิดข้อผิดพลาดระหว่าง callback กรุณาลองใหม่อีกครั้ง",
+    en: "An authentication callback error occurred. Please try again.",
+  },
+  AccessDenied: {
+    th: "ไม่มีสิทธิ์เข้าใช้งาน — กรุณาใช้อีเมลมหาวิทยาลัย @msu.ac.th เท่านั้น",
+    en: "Access denied — please use a university @msu.ac.th email address.",
+  },
+  InvalidName: {
+    th: "กรุณากรอกชื่อและนามสกุลด้วยตัวอักษรเท่านั้น โดยเว้นวรรคระหว่างชื่อกับนามสกุล",
+    en: "Enter your first and last name using letters only, separated by a space.",
+  },
+  Default: {
+    th: "เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
+    en: "Sign-in failed. Please try again.",
+  },
 };
+
+const LOGIN_COPY = {
+  th: {
+    loading: "กำลังตรวจสอบสถานะการเข้าสู่ระบบ...",
+    title: "เข้าสู่ระบบ",
+    audience: "สำหรับนิสิตและบุคลากร",
+    university: "มหาวิทยาลัยมหาสารคาม",
+    fullName: "ชื่อ-นามสกุล",
+    namePlaceholder: "ชื่อ นามสกุล",
+    nameRequired: "กรุณากรอกชื่อ-นามสกุลของคุณ",
+    nameInvalid:
+      "กรุณากรอกชื่อและนามสกุลด้วยตัวอักษรเท่านั้น โดยเว้นวรรคระหว่างชื่อกับนามสกุล",
+    universityEmail: "อีเมลมหาวิทยาลัย",
+    emailRequired: "กรุณากรอกอีเมลของคุณ",
+    emailInvalid: "กรุณาใช้อีเมลมหาวิทยาลัย @msu.ac.th เท่านั้น",
+    signingIn: "กำลังลงชื่อเข้าใช้...",
+    signIn: "เข้าสู่ระบบ",
+    emailOnly: "อีเมล @msu.ac.th เท่านั้น",
+    purpose:
+      "ระบบจัดทำขึ้นเพื่อการใช้บริการคอมพิวเตอร์และสื่อสารสนเทศของห้องสมุด",
+    institution: "สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม",
+  },
+  en: {
+    loading: "Checking your sign-in status...",
+    title: "Sign in",
+    audience: "For students and staff of",
+    university: "Mahasarakham University",
+    fullName: "Full name",
+    namePlaceholder: "First name Last name",
+    nameRequired: "Please enter your first and last name.",
+    nameInvalid:
+      "Enter your first and last name using letters only, separated by a space.",
+    universityEmail: "University email",
+    emailRequired: "Please enter your email address.",
+    emailInvalid: "Please use a university @msu.ac.th email address.",
+    signingIn: "Signing in...",
+    signIn: "Sign in",
+    emailOnly: "@msu.ac.th email only",
+    purpose:
+      "This service provides access to the library's computer and information resources.",
+    institution: "Academic Resource Center, Mahasarakham University",
+  },
+} as const;
 
 /* ─── Page ───────────────────────────────────────────────── */
 export default function Home() {
+  const { language } = useLanguage();
+  const copy = LOGIN_COPY[language];
   const { data: session, status } = useSession();
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoginPending, setIsLoginPending] = useState(false);
   const [emailInput, setEmailInput] = useState("");
-  const [emailError, setEmailError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<
+    "required" | "invalid" | null
+  >(null);
   const [nameInput, setNameInput] = useState("");
-  const [nameError, setNameError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<
+    "required" | "invalid" | null
+  >(null);
 
   // Profile stored locally per-email
   const [profile, setProfile] = useState<OnboardingData | null>(null);
@@ -95,7 +156,7 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search);
     const error = params.get("error");
     if (!error) return;
-    setAuthError(ERROR_MESSAGES[error] ?? ERROR_MESSAGES.Default);
+    setAuthError(error);
     window.history.replaceState({}, "", window.location.pathname);
   }, []);
 
@@ -175,20 +236,18 @@ export default function Home() {
     let hasError = false;
 
     if (!name) {
-      setNameError("กรุณากรอกชื่อ-นามสกุลของคุณ");
+      setNameError("required");
       hasError = true;
     } else if (!isValidFullName(name)) {
-      setNameError(
-        "กรุณากรอกชื่อและนามสกุลด้วยตัวอักษรเท่านั้น โดยเว้นวรรคระหว่างชื่อกับนามสกุล",
-      );
+      setNameError("invalid");
       hasError = true;
     }
 
     if (!email) {
-      setEmailError("กรุณากรอกอีเมลของคุณ");
+      setEmailError("required");
       hasError = true;
     } else if (!email.endsWith("@msu.ac.th")) {
-      setEmailError("กรุณาใช้อีเมลมหาวิทยาลัย @msu.ac.th เท่านั้น");
+      setEmailError("invalid");
       hasError = true;
     }
 
@@ -205,11 +264,11 @@ export default function Home() {
       });
       if (res?.error) {
         // หาก credentials ตรวจสอบแล้วไม่ผ่าน
-        setAuthError(ERROR_MESSAGES[res.error] ?? ERROR_MESSAGES.Default);
+        setAuthError(res.error);
         setIsLoginPending(false);
       }
     } catch {
-      setAuthError("ไม่สามารถเข้าสู่ระบบได้ กรุณาลองใหม่อีกครั้ง");
+      setAuthError("Default");
       setIsLoginPending(false);
     }
   };
@@ -225,15 +284,17 @@ export default function Home() {
     setProfile(data);
   };
 
+  const authErrorMessage = authError
+    ? (AUTH_ERROR_MESSAGES[authError] ?? AUTH_ERROR_MESSAGES.Default)[language]
+    : null;
+
   /* ── Loading ── */
   if (status === "loading" || (status === "authenticated" && !profileLoaded)) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-          <p className="text-sm text-slate-500">
-            กำลังตรวจสอบสถานะการเข้าสู่ระบบ...
-          </p>
+          <p className="text-sm text-slate-500">{copy.loading}</p>
         </div>
       </main>
     );
@@ -269,6 +330,7 @@ export default function Home() {
   /* ── Login page ── */
   return (
     <main className="relative min-h-screen bg-[#f8fafc] flex items-center justify-center px-4">
+      <LanguageToggle className="absolute right-4 top-4 z-20" />
       {/* Subtle background decoration */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-blue-100/50 blur-[100px]" />
@@ -295,21 +357,21 @@ export default function Home() {
             </div>
 
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              เข้าสู่ระบบ
+              {copy.title}
             </h1>
             <p className="mt-2 text-sm leading-6 text-slate-500">
-              สำหรับนิสิตและบุคลากร{" "}
+              {copy.audience}{" "}
               <span className="text-blue-600 font-medium">
-                มหาวิทยาลัยมหาสารคาม
+                {copy.university}
               </span>
             </p>
           </div>
 
           {/* Error from Auth */}
-          {authError && (
+          {authErrorMessage && (
             <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-              <p className="text-xs leading-5">{authError}</p>
+              <p className="text-xs leading-5">{authErrorMessage}</p>
             </div>
           )}
 
@@ -326,7 +388,7 @@ export default function Home() {
                 htmlFor="name-input"
                 className="mb-1.5 block text-xs font-semibold text-slate-600 uppercase tracking-wider"
               >
-                ชื่อ-นามสกุล
+                {copy.fullName}
               </label>
               <div className="relative">
                 <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
@@ -334,7 +396,7 @@ export default function Home() {
                   id="name-input"
                   type="text"
                   autoComplete="off"
-                  placeholder="ชื่อ นามสกุล"
+                  placeholder={copy.namePlaceholder}
                   value={nameInput}
                   onChange={(e) => {
                     setNameInput(e.target.value);
@@ -351,7 +413,9 @@ export default function Home() {
               {nameError && (
                 <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-600">
                   <AlertCircle className="h-3 w-3 shrink-0" />
-                  {nameError}
+                  {nameError === "required"
+                    ? copy.nameRequired
+                    : copy.nameInvalid}
                 </p>
               )}
             </div>
@@ -361,7 +425,7 @@ export default function Home() {
                 htmlFor="email-input"
                 className="mb-1.5 block text-xs font-semibold text-slate-600 uppercase tracking-wider"
               >
-                อีเมลมหาวิทยาลัย
+                {copy.universityEmail}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
@@ -386,7 +450,9 @@ export default function Home() {
               {emailError && (
                 <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-600">
                   <AlertCircle className="h-3 w-3 shrink-0" />
-                  {emailError}
+                  {emailError === "required"
+                    ? copy.emailRequired
+                    : copy.emailInvalid}
                 </p>
               )}
             </div>
@@ -400,11 +466,11 @@ export default function Home() {
               {isLoginPending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>กำลังลงชื่อเข้าใช้...</span>
+                  <span>{copy.signingIn}</span>
                 </>
               ) : (
                 <>
-                  <span>เข้าสู่ระบบ</span>
+                  <span>{copy.signIn}</span>
                   <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </>
               )}
@@ -414,18 +480,18 @@ export default function Home() {
           <div className="mt-5 flex items-center gap-2 justify-center">
             <div className="h-px flex-1 bg-slate-100" />
             <span className="text-[10px] text-slate-400 uppercase tracking-widest">
-              อีเมล @msu.ac.th เท่านั้น
+              {copy.emailOnly}
             </span>
             <div className="h-px flex-1 bg-slate-100" />
           </div>
 
           <p className="mt-4 text-center text-[11px] leading-5 text-slate-400">
-            ระบบจัดทำขึ้นเพื่อการใช้บริการคอมพิวเตอร์และสื่อสารสนเทศของห้องสมุด
+            {copy.purpose}
           </p>
         </div>
 
         <p className="mt-6 text-center text-xs text-slate-400">
-          สำนักวิทยบริการ มหาวิทยาลัยมหาสารคาม
+          {copy.institution}
         </p>
       </div>
     </main>
