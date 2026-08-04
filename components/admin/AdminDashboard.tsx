@@ -1,9 +1,5 @@
 import {
   AlertCircle,
-  BarChart3,
-  BookOpenCheck,
-  Building2,
-  GraduationCap,
   Loader2,
   LogOut,
   RefreshCw,
@@ -169,11 +165,31 @@ export function AdminDashboard({
               </div>
 
               <section id="details" className="mt-7 scroll-mt-6" aria-label="รายละเอียดการใช้งาน">
-                <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
-                  <RankingPanel eyebrow="นิสิต" title="คณะสังกัด" icon={<GraduationCap className="h-5 w-5" />} items={stats.faculties} accent="blue" />
-                  <RankingPanel eyebrow="บุคลากร" title="หน่วยงาน" icon={<Building2 className="h-5 w-5" />} items={stats.departments} accent="cyan" />
-                  <RankingPanel eyebrow="นิสิต" title="ชั้นปี" icon={<BookOpenCheck className="h-5 w-5" />} items={stats.studentYears} accent="amber" />
-                  <RankingPanel eyebrow="แพลตฟอร์ม AI" title="ถูกเลือกมากที่สุด" icon={<BarChart3 className="h-5 w-5" />} items={stats.platforms} accent="violet" highlightFirst />
+                <header className="mb-3 flex items-baseline justify-between gap-4">
+                  <div>
+                    <p className="admin-number text-[10px] font-semibold tracking-[0.16em] text-[var(--admin-blue)]">
+                      DETAIL REGISTERS
+                    </p>
+                    <h2 className="admin-display mt-1 text-lg font-semibold tracking-[-0.02em]">
+                      รายละเอียดตามกลุ่มผู้ใช้งาน
+                    </h2>
+                  </div>
+                  <p className="hidden text-xs text-slate-500 sm:block">เรียงตามจำนวนจากมากไปน้อย</p>
+                </header>
+
+                <div className="grid gap-px bg-[var(--admin-line)] xl:grid-cols-12">
+                  <div className="bg-white xl:col-span-7">
+                    <RankingPanel reportCode="ST-01" title="คณะสังกัด" items={stats.faculties} variant="student" />
+                  </div>
+                  <div className="bg-white xl:col-span-5">
+                    <RankingPanel reportCode="SF-01" title="หน่วยงาน" items={stats.departments} variant="staff" />
+                  </div>
+                  <div className="bg-white xl:col-span-4">
+                    <RankingPanel reportCode="ST-02" title="ชั้นปี" items={stats.studentYears} variant="student" />
+                  </div>
+                  <div className="bg-white xl:col-span-8">
+                    <RankingPanel reportCode="AI-01" title="แพลตฟอร์ม AI ที่ถูกเลือก" items={stats.platforms} variant="platform" />
+                  </div>
                 </div>
               </section>
             </div>
