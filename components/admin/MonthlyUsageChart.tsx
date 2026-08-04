@@ -14,85 +14,80 @@ export function MonthlyUsageChart({ data }: MonthlyUsageChartProps) {
     .join(", ");
 
   return (
-    <section className="border-y border-[var(--admin-line)] bg-white">
-      <header className="flex flex-col gap-4 border-b border-[var(--admin-line)] px-5 py-5 sm:flex-row sm:items-end sm:justify-between sm:px-6">
+    <section className="overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-sm">
+      <div className="flex flex-col gap-4 border-b border-slate-100 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="admin-number text-[10px] font-semibold tracking-[0.16em] text-[var(--admin-blue)]">
-            MO-12 · รอบการใช้งานประจำปี
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600">
+            ภาพรวม 12 เดือน
           </p>
-          <h2 className="admin-display mt-1 text-lg font-semibold tracking-[-0.02em]">
+          <h2 className="mt-1 text-lg font-bold tracking-tight text-slate-900">
             ผู้ใช้งานไม่ซ้ำรายเดือน
           </h2>
-          <p className="mt-1 text-xs text-slate-500">เปรียบเทียบนิสิตและบุคลากรตลอด 12 เดือน</p>
         </div>
-
-        <div className="flex items-center gap-5 text-xs text-slate-600" aria-label="คำอธิบายสัญลักษณ์กราฟ">
+        <div
+          className="flex items-center gap-5 text-xs font-medium text-slate-600"
+          aria-label="คำอธิบายกราฟ"
+        >
           <span className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-[var(--admin-student)]" aria-hidden="true" />
+            <span className="h-2.5 w-2.5 rounded-sm bg-blue-600" aria-hidden="true" />
             นิสิต
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 bg-[var(--admin-staff)]" aria-hidden="true" />
+            <span className="h-2.5 w-2.5 rounded-sm bg-cyan-500" aria-hidden="true" />
             บุคลากร
           </span>
         </div>
-      </header>
+      </div>
 
-      <div className="overflow-x-auto px-5 pb-5 pt-6 sm:px-6">
+      <div className="overflow-x-auto px-4 pb-5 pt-6 sm:px-6">
         <div
-          className="relative min-w-[760px]"
+          className="relative min-w-[720px]"
           role="img"
           aria-label={`กราฟผู้ใช้งานไม่ซ้ำรายเดือน: ${chartDescription}`}
         >
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-48" aria-hidden="true">
-            {[0, 1, 2].map((line) => (
+          <div className="pointer-events-none absolute inset-x-0 top-6 h-48" aria-hidden="true">
+            {[0, 1, 2, 3].map((line) => (
               <div
                 key={line}
-                className="absolute inset-x-0 border-t border-dashed border-[var(--admin-line)]"
-                style={{ top: `${line * 50}%` }}
+                className="absolute inset-x-0 border-t border-dashed border-slate-200"
+                style={{ top: `${line * 33.333}%` }}
               />
             ))}
           </div>
-          <div className="pointer-events-none absolute inset-x-0 top-48 border-t border-[var(--admin-ink)]" aria-hidden="true" />
 
-          <div className="relative grid grid-cols-12">
+          <div className="relative grid grid-cols-12 gap-2">
             {data.map((month) => {
               const studentHeight = (month.students / maximum) * 100;
               const staffHeight = (month.staff / maximum) * 100;
 
               return (
-                <div key={month.month} className="min-w-0 px-1.5 text-center">
-                  <div className="flex h-48 items-end justify-center gap-2" aria-hidden="true">
-                    <div className="flex h-full w-5 flex-col justify-end">
-                      <span className="admin-number mb-1 text-[10px] font-semibold text-[var(--admin-ink)]">
+                <div key={month.month} className="flex min-w-0 flex-col items-center">
+                  <div className="flex h-52 w-full items-end justify-center gap-1.5 border-b-2 border-slate-800/80 px-1">
+                    <div className="flex h-full w-[42%] flex-col justify-end">
+                      <span className="mb-1 text-center text-[10px] font-semibold tabular-nums text-slate-500">
                         {month.students.toLocaleString("th-TH")}
                       </span>
-                      <span
-                        className="relative mx-auto block w-1 bg-[var(--admin-student)] transition-[height] duration-500 motion-reduce:transition-none"
-                        style={{ height: `${studentHeight * 0.82}%` }}
-                      >
-                        <span className="absolute -left-1 -top-1.5 h-3 w-3 rounded-full border-2 border-white bg-[var(--admin-student)]" />
-                      </span>
+                      <div
+                        className="min-h-[3px] w-full rounded-t-md bg-blue-600 transition-[height] duration-500 motion-reduce:transition-none"
+                        style={{ height: `${studentHeight}%` }}
+                      />
                     </div>
-                    <div className="flex h-full w-5 flex-col justify-end">
-                      <span className="admin-number mb-1 text-[10px] font-semibold text-[var(--admin-ink)]">
+                    <div className="flex h-full w-[42%] flex-col justify-end">
+                      <span className="mb-1 text-center text-[10px] font-semibold tabular-nums text-slate-500">
                         {month.staff.toLocaleString("th-TH")}
                       </span>
-                      <span
-                        className="relative mx-auto block w-2 bg-[var(--admin-staff)] transition-[height] duration-500 motion-reduce:transition-none"
-                        style={{ height: `${staffHeight * 0.82}%` }}
-                      >
-                        <span className="absolute -left-0.5 -top-1 h-3 w-3 border-2 border-white bg-[var(--admin-staff)]" />
-                      </span>
+                      <div
+                        className="min-h-[3px] w-full rounded-t-md bg-cyan-500 transition-[height] duration-500 motion-reduce:transition-none"
+                        style={{ height: `${staffHeight}%` }}
+                      />
                     </div>
                   </div>
-
-                  <div className="pt-2.5">
-                    <p className="text-[11px] font-semibold text-[var(--admin-ink)]">{month.label}</p>
-                    <p className="admin-number mt-0.5 text-[10px] text-slate-500">
-                      รวม {month.total.toLocaleString("th-TH")}
-                    </p>
-                  </div>
+                  <span className="mt-3 text-[11px] font-semibold text-slate-500">
+                    {month.label}
+                  </span>
+                  <span className="mt-0.5 text-[10px] tabular-nums text-slate-400">
+                    รวม {month.total.toLocaleString("th-TH")}
+                  </span>
                 </div>
               );
             })}

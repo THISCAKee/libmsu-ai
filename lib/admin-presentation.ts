@@ -1,13 +1,5 @@
 import type { AdminStats } from "./admin-stats.ts";
 
-export type AnnualLedgerItem = {
-  key: "uniqueUsers" | "students" | "staff" | "selections";
-  label: string;
-  note: string;
-  value: number;
-  tone: "ink" | "student" | "staff" | "neutral";
-};
-
 export type AnnualSummaryCard = {
   key: "uniqueUsers" | "students" | "staff" | "selections";
   label: string;
@@ -34,41 +26,6 @@ export function getReportingYearOptions(
   const options = new Set(years);
   if (selectedYear !== null) options.add(selectedYear);
   return [...options].sort((a, b) => b - a);
-}
-
-export function buildAnnualLedger(
-  summary: AdminStats["summary"],
-): AnnualLedgerItem[] {
-  return [
-    {
-      key: "uniqueUsers",
-      label: "ผู้ใช้งานไม่ซ้ำ",
-      note: "รวมทั้งปี",
-      value: summary.uniqueUsers,
-      tone: "ink",
-    },
-    {
-      key: "students",
-      label: "นิสิต",
-      note: "นับจากรหัสนิสิต",
-      value: summary.students,
-      tone: "student",
-    },
-    {
-      key: "staff",
-      label: "บุคลากร",
-      note: "นับจากชื่อ-นามสกุล",
-      value: summary.staff,
-      tone: "staff",
-    },
-    {
-      key: "selections",
-      label: "การเลือกแพลตฟอร์ม",
-      note: "รวมทุกรายการ",
-      value: summary.selections,
-      tone: "neutral",
-    },
-  ];
 }
 
 export function buildAnnualSummaryCards(

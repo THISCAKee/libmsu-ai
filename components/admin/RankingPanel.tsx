@@ -1,83 +1,83 @@
+import type { ReactNode } from "react";
+
 import type { RankingItem } from "@/lib/admin-stats";
 
 type RankingPanelProps = {
-  reportCode: string;
+  eyebrow: string;
   title: string;
+  icon: ReactNode;
   items: RankingItem[];
-  variant?: "student" | "staff" | "neutral" | "platform";
+  accent?: "blue" | "cyan" | "amber" | "violet";
+  highlightFirst?: boolean;
 };
 
-const variantLabel = {
-  student: "ข้อมูลนิสิต",
-  staff: "ข้อมูลบุคลากร",
-  neutral: "ทะเบียนสรุป",
-  platform: "ข้อมูลการเลือกใช้",
-} as const;
-
-const variantRule = {
-  student: "bg-[var(--admin-student)]",
-  staff: "bg-[var(--admin-staff)]",
-  neutral: "bg-[var(--admin-ink)]",
-  platform: "bg-[var(--admin-blue)]",
+const accents = {
+  blue: { icon: "bg-blue-50 text-blue-600", bar: "bg-blue-500" },
+  cyan: { icon: "bg-cyan-50 text-cyan-600", bar: "bg-cyan-500" },
+  amber: { icon: "bg-amber-50 text-amber-600", bar: "bg-amber-500" },
+  violet: { icon: "bg-violet-50 text-violet-600", bar: "bg-violet-500" },
 } as const;
 
 export function RankingPanel({
-  reportCode,
+  eyebrow,
   title,
+  icon,
   items,
-  variant = "neutral",
+  accent = "blue",
+  highlightFirst = false,
 }: RankingPanelProps) {
+  const palette = accents[accent];
+  const maximum = Math.max(1, ...items.map((item) => item.count));
+
   return (
-    <section className="h-full bg-white px-5 py-5 sm:px-6" aria-labelledby={`${reportCode}-title`}>
-      <header className="mb-4 flex items-start justify-between gap-4 border-b border-[var(--admin-line)] pb-4">
+    <section className="rounded-[24px] border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+      <div className="mb-5 flex items-center gap-3">
+        <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${palette.icon}`}>
+          {icon}
+        </div>
         <div className="min-w-0">
-          <p className="admin-number text-[10px] font-semibold tracking-[0.14em] text-slate-500">
-            {reportCode}
+          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+            {eyebrow}
           </p>
-          <h2 id={`${reportCode}-title`} className="admin-display mt-1 text-base font-semibold tracking-[-0.01em]">
-            {title}
-          </h2>
+          <h2 className="truncate text-base font-bold text-slate-900">{title}</h2>
         </div>
-        <div className="flex shrink-0 items-center gap-2 pt-0.5 text-[10px] text-slate-500">
-          <span className={`h-3 w-1 ${variantRule[variant]}`} aria-hidden="true" />
-          {variantLabel[variant]}
-        </div>
-      </header>
+      </div>
 
       {items.length === 0 ? (
-        <p className="flex min-h-32 items-center justify-center border-y border-dashed border-[var(--admin-line)] px-4 text-center text-sm text-slate-500">
-          ยังไม่มีรายการในปีรายงานนี้
-        </p>
+        <div className="flex min-h-36 items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 text-center text-sm text-slate-400">
+          ยังไม่มีข้อมูลในปีนี้
+        </div>
       ) : (
-        <ol className="divide-y divide-[var(--admin-line)]">
-          {items.map((item, index) => {
-            const isTopPlatform = variant === "platform" && index === 0;
-
-            return (
-              <li
-                key={`${item.label}-${index}`}
-                className={`relative grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-3 py-3 ${
-                  isTopPlatform ? "border-l-2 border-[var(--admin-blue)] pl-3" : ""
-                }`}
-              >
-                <span className="admin-number text-[10px] text-slate-400">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div className="flex min-w-0 items-baseline gap-2">
-                  <span className="min-w-0 text-sm leading-5 text-[var(--admin-ink)]">{item.label}</span>
-                  <span className="min-w-3 flex-1 border-b border-dotted border-slate-300" aria-hidden="true" />
-                  {isTopPlatform && (
-                    <span className="shrink-0 text-[10px] font-semibold text-[var(--admin-blue)]">
-                      อันดับสูงสุด
-                    </span>
-                  )}
+        <ol className="space-y-4">
+          {items.map((item, index) => (
+            <li key={`${item.label}-${index}`}>
+              <div className="mb-1.5 flex items-start justify-between gap-3">
+                <div className="flex min-w-0 items-start gap-2.5">
+                  <span
+                    className={`mt-0.5 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-[10px] font-bold tabular-nums ${
+                      highlightFirst && index === 0
+                        ? "bg-amber-400 text-amber-950"
+                        : "bg-slate-100 text-slate-500"
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                  <span className="line-clamp-2 text-xs font-medium leading-5 text-slate-700">
+                    {item.label}
+                  </span>
                 </div>
-                <span className="admin-number text-sm font-semibold text-[var(--admin-ink)]">
+                <span className="shrink-0 text-sm font-bold tabular-nums text-slate-900">
                   {item.count.toLocaleString("th-TH")}
                 </span>
-              </li>
-            );
-          })}
+              </div>
+              <div className="ml-7 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                <div
+                  className={`h-full rounded-full ${palette.bar}`}
+                  style={{ width: `${Math.max(3, (item.count / maximum) * 100)}%` }}
+                />
+              </div>
+            </li>
+          ))}
         </ol>
       )}
     </section>
