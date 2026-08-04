@@ -85,3 +85,21 @@ Developer: ถ้าบุคลากรทำงานอยู่ในคณ
 Domain expert: เมื่อผู้ใช้งานกด ChatGPT เรานับอะไร?
 
 Developer: นั่นคือการเลือกแพลตฟอร์ม และจะสร้างบันทึกการใช้งานที่มีข้อมูลผู้ใช้งาน เวลาใช้งาน และแพลตฟอร์ม AI ที่เลือก
+
+## Admin Reporting
+
+The password-protected `/admin` dashboard reports annual usage from the
+existing `Logs` Google Sheet. A **ผู้ใช้งานไม่ซ้ำ** is identified by
+**รหัสนิสิต** for a **นิสิต** and by normalized full name for **บุคลากร**.
+Monthly values deduplicate within each month; the annual value deduplicates
+across the selected year. AI popularity counts every **การเลือกแพลตฟอร์ม**.
+
+Configure the Next.js deployment with `ADMIN_PASSWORD`,
+`ADMIN_SESSION_SECRET`, and `ADMIN_DATA_SECRET` in addition to the existing
+`GOOGLE_SHEETS_SCRIPT_URL`. Use long random values for both secrets and do not
+prefix them with `NEXT_PUBLIC_`.
+
+After updating `google-apps-script/Code.gs`, add an Apps Script Property named
+`ADMIN_DATA_SECRET` with the same value as the Next.js environment variable,
+then deploy a new Web App version. The dashboard cannot read reports until the
+new Apps Script deployment is active.

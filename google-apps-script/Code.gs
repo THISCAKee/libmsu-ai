@@ -1,5 +1,52 @@
 const SHEET_NAME = "Logs";
 
+function jsonResponse(payload) {
+  return ContentService.createTextOutput(JSON.stringify(payload)).setMimeType(
+    ContentService.MimeType.JSON,
+  );
+}
+
+function doGet(e) {
+  try {
+    const expectedSecret =
+      PropertiesService.getScriptProperties().getProperty("ADMIN_DATA_SECRET");
+    const receivedSecret = e && e.parameter ? e.parameter.secret : "";
+    const action = e && e.parameter ? e.parameter.action : "";
+
+    if (!expectedSecret || receivedSecret !== expectedSecret || action !== "readLogs") {
+      return jsonResponse({ success: false, error: "Unauthorized" });
+    }
+
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    if (!sheet || sheet.getLastRow() < 2) {
+      return jsonResponse({ success: true, rows: [] });
+    }
+
+    const values = sheet
+      .getRange(2, 1, sheet.getLastRow() - 1, 10)
+      .getDisplayValues();
+    const rows = values.map(function (columns) {
+      return {
+        timestamp: columns[0],
+        name: columns[1],
+        role: columns[2],
+        studentId: columns[3],
+        year: columns[4],
+        faculty: columns[5],
+        major: columns[6],
+        department: columns[7],
+        action: columns[8],
+        platformName: columns[9],
+      };
+    });
+
+    return jsonResponse({ success: true, rows: rows });
+  } catch (error) {
+    return jsonResponse({ success: false, error: error.toString() });
+  }
+}
+
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
@@ -41,12 +88,8 @@ function doPost(e) {
       data.platformName || "-",
     ]);
 
-    return ContentService.createTextOutput(
-      JSON.stringify({ success: true, mode: "append" }),
-    ).setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ success: true, mode: "append" });
   } catch (error) {
-    return ContentService.createTextOutput(
-      JSON.stringify({ success: false, error: error.toString() }),
-    ).setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ success: false, error: error.toString() });
   }
 }
