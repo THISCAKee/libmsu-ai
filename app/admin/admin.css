@@ -1,0 +1,49 @@
+.admin-console {
+  --admin-ink: #0b1f33;
+  --admin-paper: #f5f7f8;
+  --admin-line: #d9e0e5;
+  --admin-blue: #1b4dff;
+  --admin-staff: #16827a;
+  --admin-student: #e9a23b;
+  background: var(--admin-paper);
+  color: var(--admin-ink);
+  font-family: var(--font-anuphun), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.admin-console .admin-display {
+  font-family: var(--font-admin-display), var(--font-anuphun), sans-serif;
+}
+
+.admin-console .admin-number {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-console :focus-visible {
+  outline: 3px solid var(--admin-blue);
+  outline-offset: 3px;
+}
+
+.admin-console .admin-report-enter {
+  animation: admin-report-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes admin-report-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-console .admin-report-enter {
+    animation: none;
+  }
+}
