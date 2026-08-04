@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
-  buildAnnualLedger,
+  buildAnnualSummaryCards,
   formatBuddhistYear,
   formatThaiReportTime,
   getReportingYearOptions,
@@ -26,19 +26,19 @@ test("getReportingYearOptions includes the selected empty year and sorts distinc
   );
 });
 
-test("buildAnnualLedger preserves all four report values in report order", () => {
+test("buildAnnualSummaryCards maps annual values to the original card order and accents", () => {
   assert.deepEqual(
-    buildAnnualLedger({
+    buildAnnualSummaryCards({
       uniqueUsers: 12,
       students: 8,
       staff: 4,
       selections: 31,
-    }).map(({ key, value, tone }) => ({ key, value, tone })),
+    }).map(({ key, value, accent }) => ({ key, value, accent })),
     [
-      { key: "uniqueUsers", value: 12, tone: "ink" },
-      { key: "students", value: 8, tone: "student" },
-      { key: "staff", value: 4, tone: "staff" },
-      { key: "selections", value: 31, tone: "neutral" },
+      { key: "uniqueUsers", value: 12, accent: "navy" },
+      { key: "students", value: 8, accent: "blue" },
+      { key: "staff", value: 4, accent: "cyan" },
+      { key: "selections", value: 31, accent: "violet" },
     ],
   );
 });
