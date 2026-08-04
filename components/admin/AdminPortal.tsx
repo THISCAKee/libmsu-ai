@@ -126,11 +126,43 @@ export function AdminPortal() {
 
   if (authenticated === null) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f4f7fb]">
-        <div className="flex items-center gap-3 text-sm font-medium text-slate-500">
-          <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
-          กำลังตรวจสอบสิทธิ์ผู้ดูแล
-        </div>
+      <main className="admin-console grid min-h-screen grid-rows-[5rem_1fr] md:grid-cols-[minmax(13rem,26vw)_1fr] md:grid-rows-1">
+        <header className="flex items-center justify-between gap-4 bg-[var(--admin-ink)] px-6 text-white sm:px-8 md:min-h-screen md:flex-col md:items-start md:px-10 md:py-10">
+          <img
+            src="/logotab.png"
+            alt="มหาวิทยาลัยมหาสารคาม"
+            className="h-11 w-auto bg-white p-1.5 md:h-14"
+          />
+          <div className="hidden w-full md:block">
+            <div className="mb-6 h-px w-full bg-white/25" aria-hidden="true" />
+            <p className="text-xs leading-6 text-white/60">สำนักวิทยบริการ</p>
+            <p className="admin-display mt-2 text-xl font-semibold leading-snug">
+              ศูนย์รายงานการใช้แพลตฟอร์ม AI
+            </p>
+          </div>
+          <p className="admin-number text-[10px] tracking-[0.14em] text-white/55">
+            ระเบียน 01 / ผู้ดูแล
+          </p>
+        </header>
+
+        <section className="flex min-w-0 items-center px-6 py-12 sm:px-10 md:px-[clamp(3rem,9vw,9rem)]">
+          <div
+            className="w-full max-w-xl border-y border-[var(--admin-line)] py-6"
+            role="status"
+            aria-live="polite"
+          >
+            <p className="admin-number text-[10px] font-semibold tracking-[0.12em] text-[var(--admin-blue)]">
+              รายงานการใช้บริการ · ผู้ดูแลระบบ
+            </p>
+            <div className="mt-4 flex items-center gap-3 text-sm font-medium text-slate-600">
+              <Loader2
+                className="h-5 w-5 animate-spin text-[var(--admin-blue)] motion-reduce:animate-none"
+                aria-hidden="true"
+              />
+              กำลังตรวจสอบสิทธิ์ผู้ดูแล
+            </div>
+          </div>
+        </section>
       </main>
     );
   }

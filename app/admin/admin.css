@@ -46,4 +46,16 @@
   .admin-console .admin-report-enter {
     animation: none;
   }
+
+  .admin-console .animate-spin,
+  .admin-console .animate-pulse {
+    animation: none;
+  }
+
+  .admin-console *,
+  .admin-console *::before,
+  .admin-console *::after {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms;
+  }
 }
