@@ -1,23 +1,11 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import {
-  AlertCircle,
-  BarChart3,
-  BookOpenCheck,
-  Building2,
-  CalendarDays,
-  GraduationCap,
-  Loader2,
-  LogOut,
-  RefreshCw,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { Loader2 } from "lucide-react";
 
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { AdminLogin } from "@/components/admin/AdminLogin";
-import { MonthlyUsageChart } from "@/components/admin/MonthlyUsageChart";
-import { RankingPanel } from "@/components/admin/RankingPanel";
+import { getReportingYearOptions } from "@/lib/admin-presentation";
 import type { AdminStats } from "@/lib/admin-stats";
 
 type StatsResponse = {
@@ -28,41 +16,6 @@ type StatsResponse = {
 };
 
 type ErrorResponse = { success?: false; error?: string };
-
-const summaryCards = [
-  {
-    key: "uniqueUsers" as const,
-    label: "ผู้ใช้งานไม่ซ้ำ",
-    hint: "รวมทั้งปี",
-    icon: Users,
-    tone: "bg-[#102a4c] text-white",
-    iconTone: "bg-white/10 text-cyan-300",
-  },
-  {
-    key: "students" as const,
-    label: "นิสิต",
-    hint: "นับจากรหัสนิสิต",
-    icon: GraduationCap,
-    tone: "bg-white text-slate-900",
-    iconTone: "bg-blue-50 text-blue-600",
-  },
-  {
-    key: "staff" as const,
-    label: "บุคลากร",
-    hint: "นับจากชื่อ-นามสกุล",
-    icon: Building2,
-    tone: "bg-white text-slate-900",
-    iconTone: "bg-cyan-50 text-cyan-600",
-  },
-  {
-    key: "selections" as const,
-    label: "การเลือกแพลตฟอร์ม",
-    hint: "รวมทุกรายการ",
-    icon: Sparkles,
-    tone: "bg-white text-slate-900",
-    iconTone: "bg-violet-50 text-violet-600",
-  },
-];
 
 async function readJson<T>(response: Response): Promise<T | null> {
   return (await response.json().catch(() => null)) as T | null;
@@ -131,11 +84,10 @@ export function AdminPortal() {
     };
   }, [loadStats]);
 
-  const yearOptions = useMemo(() => {
-    const options = new Set(years);
-    if (selectedYear) options.add(selectedYear);
-    return [...options].sort((a, b) => b - a);
-  }, [selectedYear, years]);
+  const yearOptions = useMemo(
+    () => getReportingYearOptions(years, selectedYear),
+    [selectedYear, years],
+  );
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -199,124 +151,16 @@ export function AdminPortal() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f4f7fb] text-slate-900">
-      <header className="border-b border-slate-200/80 bg-white">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-5 px-5 py-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-100 bg-white shadow-sm">
-              <img src="/logotab.png" alt="MSU" className="h-8 w-auto" />
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-blue-600">LIB AI · Admin</p>
-              <h1 className="text-xl font-bold tracking-tight text-[#102a4c]">สถิติการใช้งานแพลตฟอร์ม AI</h1>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <label htmlFor="report-year" className="sr-only">เลือกปีรายงาน</label>
-            <div className="relative">
-              <CalendarDays className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <select
-                id="report-year"
-                value={selectedYear ?? ""}
-                onChange={(event) => loadStats(Number(event.target.value))}
-                disabled={loading}
-                className="h-10 appearance-none rounded-xl border border-slate-200 bg-white py-0 pl-9 pr-9 text-sm font-semibold text-slate-700 outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 disabled:opacity-60"
-              >
-                {yearOptions.map((year) => (
-                  <option key={year} value={year}>ปี {year + 543}</option>
-                ))}
-              </select>
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => loadStats(selectedYear ?? undefined)}
-              disabled={loading}
-              className="flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-blue-100 disabled:opacity-60"
-            >
-              <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
-              รีเฟรช
-            </button>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="flex h-10 cursor-pointer items-center gap-2 rounded-xl px-3 text-xs font-semibold text-slate-500 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-4 focus:ring-red-100"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              ออกจากระบบ
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div className="mx-auto max-w-[1400px] px-5 py-8 sm:px-8 sm:py-10">
-        <div className="mb-7 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-medium text-slate-500">รายงานประจำปี</p>
-            <h2 className="mt-1 text-3xl font-bold tracking-[-0.04em] text-[#102a4c] sm:text-4xl">
-              {selectedYear ? `พ.ศ. ${selectedYear + 543}` : "กำลังโหลด"}
-            </h2>
-          </div>
-          {lastUpdated && (
-            <p className="text-xs text-slate-400">
-              อัปเดตล่าสุด {lastUpdated.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" })} น.
-            </p>
-          )}
-        </div>
-
-        {dashboardError && (
-          <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700 sm:flex-row sm:items-center sm:justify-between" role="alert">
-            <span className="flex items-start gap-2"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{dashboardError}</span>
-            <button type="button" onClick={() => loadStats(selectedYear ?? undefined)} className="cursor-pointer self-start font-bold underline underline-offset-4 sm:self-auto">ลองอีกครั้ง</button>
-          </div>
-        )}
-
-        {loading && !stats ? (
-          <div className="flex min-h-[420px] items-center justify-center rounded-[28px] border border-slate-200 bg-white">
-            <div className="flex flex-col items-center gap-3 text-sm text-slate-500">
-              <Loader2 className="h-7 w-7 animate-spin text-blue-600" />
-              กำลังสรุปข้อมูลการใช้งาน
-            </div>
-          </div>
-        ) : stats ? (
-          <div className={loading ? "pointer-events-none opacity-60" : ""} aria-busy={loading}>
-            <section className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="สรุปข้อมูลรายปี">
-              {summaryCards.map((card) => {
-                const Icon = card.icon;
-                return (
-                  <article key={card.key} className={`relative overflow-hidden rounded-[22px] border border-slate-200/70 p-5 shadow-sm ${card.tone}`}>
-                    {card.key === "uniqueUsers" && <div className="absolute -right-10 -top-12 h-32 w-32 rounded-full border-[24px] border-cyan-300/10" aria-hidden="true" />}
-                    <div className="relative flex items-start justify-between gap-3">
-                      <div>
-                        <p className={`text-xs font-medium ${card.key === "uniqueUsers" ? "text-slate-300" : "text-slate-500"}`}>{card.label}</p>
-                        <p className="mt-3 text-3xl font-bold tracking-tight tabular-nums">{stats.summary[card.key].toLocaleString("th-TH")}</p>
-                        <p className={`mt-1 text-[10px] ${card.key === "uniqueUsers" ? "text-slate-400" : "text-slate-400"}`}>{card.hint}</p>
-                      </div>
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.iconTone}`}><Icon className="h-5 w-5" /></div>
-                    </div>
-                  </article>
-                );
-              })}
-            </section>
-
-            {stats.summary.selections === 0 && (
-              <div className="mb-6 rounded-2xl border border-dashed border-slate-300 bg-white px-5 py-4 text-center text-sm text-slate-500">
-                ยังไม่มีบันทึกการใช้งานในปีที่เลือก
-              </div>
-            )}
-
-            <div className="mb-6"><MonthlyUsageChart data={stats.monthly} /></div>
-
-            <section className="grid gap-6 lg:grid-cols-2 xl:grid-cols-4" aria-label="รายละเอียดการใช้งาน">
-              <RankingPanel eyebrow="นิสิต" title="คณะสังกัด" icon={<GraduationCap className="h-5 w-5" />} items={stats.faculties} accent="blue" />
-              <RankingPanel eyebrow="บุคลากร" title="หน่วยงาน" icon={<Building2 className="h-5 w-5" />} items={stats.departments} accent="cyan" />
-              <RankingPanel eyebrow="นิสิต" title="ชั้นปี" icon={<BookOpenCheck className="h-5 w-5" />} items={stats.studentYears} accent="amber" />
-              <RankingPanel eyebrow="แพลตฟอร์ม AI" title="ถูกเลือกมากที่สุด" icon={<BarChart3 className="h-5 w-5" />} items={stats.platforms} accent="violet" highlightFirst />
-            </section>
-          </div>
-        ) : null}
-      </div>
-    </main>
+    <AdminDashboard
+      stats={stats}
+      years={yearOptions}
+      selectedYear={selectedYear}
+      loading={loading}
+      error={dashboardError}
+      lastUpdated={lastUpdated}
+      onSelectYear={(year) => loadStats(year)}
+      onRefresh={() => loadStats(selectedYear ?? undefined)}
+      onLogout={handleLogout}
+    />
   );
 }
