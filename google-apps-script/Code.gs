@@ -1,5 +1,14 @@
 const SHEET_NAME = "Logs";
 
+// เรียกใช้ฟังก์ชันนี้ครั้งเดียวจาก Apps Script editor (เลือกฟังก์ชันนี้แล้วกด Run)
+// เพื่อตั้งค่า ADMIN_DATA_SECRET ให้ตรงกับ .env.local จากนั้นลบ/ไม่ต้องเรียกซ้ำอีก
+function setAdminDataSecret() {
+  PropertiesService.getScriptProperties().setProperty(
+    "ADMIN_DATA_SECRET",
+    "c6fac9d48ceb8edad74e9d0030260e4cdf0c5e91d0ddb36229a8f923a90094a1",
+  );
+}
+
 function jsonResponse(payload) {
   return ContentService.createTextOutput(JSON.stringify(payload)).setMimeType(
     ContentService.MimeType.JSON,
