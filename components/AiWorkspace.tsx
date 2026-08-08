@@ -10,10 +10,12 @@ import {
   SearchCode,
   LogOut,
   ChevronRight,
+  CircleOff,
 } from "lucide-react";
 import type { AiPlatform } from "@/data/platforms";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useLanguage } from "@/components/LanguageProvider";
+import { getAiPlatformPresentation } from "@/lib/ai-platform-presentation";
 
 type UserProfile = {
   name: string;
@@ -43,7 +45,6 @@ const WORKSPACE_COPY = {
     subtitle: "เชื่อมต่อไปยังระบบหลักของแต่ละแพลตฟอร์มโดยตรง",
     searchPlaceholder: "ค้นหาตามชื่อ, รายละเอียด หรือประเภท...",
     searchLabel: "ค้นหาแพลตฟอร์ม AI",
-    open: "เปิดใช้งาน",
     noResults: "ไม่พบแพลตฟอร์ม AI ที่ตรงกับการค้นหา",
     categories: {
       All: "ทั้งหมด",
@@ -61,7 +62,6 @@ const WORKSPACE_COPY = {
     subtitle: "Connect directly to each platform's official service.",
     searchPlaceholder: "Search by name, description, or category...",
     searchLabel: "Search AI platforms",
-    open: "Open platform",
     noResults: "No AI platforms match your search.",
     categories: {
       All: "All",
@@ -245,82 +245,113 @@ export function AiWorkspace({
 
         {/* Platform cards grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredPlatforms.map((platform) => (
-            <a
-              key={platform.id}
-              href={platform.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col bg-white rounded-2xl border border-slate-200/80 hover:border-slate-300 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden"
-              onClick={() => handleCardClick(platform.name)}
-            >
-              {/* Card top accent */}
-              <div
-                className="h-1 w-full"
-                style={{ backgroundColor: platform.accent }}
-              />
+          {filteredPlatforms.map((platform) => {
+            const presentation = getAiPlatformPresentation(platform, language);
+            const cardContent = (
+              <>
+                {/* Card top accent */}
+                <div
+                  className="h-1 w-full"
+                  style={{ backgroundColor: platform.accent }}
+                />
 
-              <div className="flex flex-col flex-grow p-6">
-                {/* Top row: logo + plan badge */}
-                <div className="flex items-start justify-between mb-5">
-                  <div
-                    className="h-12 w-12 rounded-xl flex items-center justify-center shadow-sm border border-slate-100"
-                    style={{ backgroundColor: platform.accentLight }}
-                  >
-                    <img
-                      src={platform.logo}
-                      alt={`${platform.name} logo`}
-                      className="h-7 w-7 object-contain"
-                      onError={(e) => {
-                        // Fallback: ใช้ตัวอักษรแรกของชื่อ
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = "none";
-                        const parent = target.parentElement;
-                        if (parent) {
-                          parent.innerHTML = `<span style="font-size:18px;font-weight:700;color:${platform.accent}">${platform.name.charAt(0)}</span>`;
-                        }
-                      }}
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-semibold uppercase px-2 py-1 rounded-md bg-slate-100 text-slate-500 tracking-wider">
-                      {platform.category}
-                    </span>
-                    {platform.plan && (
-                      <span
-                        className="text-[10px] font-semibold px-2 py-1 rounded-md"
-                        style={{
-                          backgroundColor: platform.accentLight,
-                          color: platform.accent,
+                <div className="flex flex-col flex-grow p-6">
+                  {/* Top row: logo + plan badge */}
+                  <div className="flex items-start justify-between mb-5">
+                    <div
+                      className="h-12 w-12 rounded-xl flex items-center justify-center shadow-sm border border-slate-100"
+                      style={{ backgroundColor: platform.accentLight }}
+                    >
+                      <img
+                        src={platform.logo}
+                        alt={`${platform.name} logo`}
+                        className="h-7 w-7 object-contain"
+                        onError={(e) => {
+                          // Fallback: ใช้ตัวอักษรแรกของชื่อ
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = "none";
+                          const parent = target.parentElement;
+                          if (parent) {
+                            parent.innerHTML = `<span style="font-size:18px;font-weight:700;color:${platform.accent}">${platform.name.charAt(0)}</span>`;
+                          }
                         }}
-                      >
-                        {platform.plan}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-semibold uppercase px-2 py-1 rounded-md bg-slate-100 text-slate-500 tracking-wider">
+                        {platform.category}
                       </span>
+                      {platform.plan && (
+                        <span
+                          className="text-[10px] font-semibold px-2 py-1 rounded-md"
+                          style={{
+                            backgroundColor: platform.accentLight,
+                            color: platform.accent,
+                          }}
+                        >
+                          {platform.plan}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Name & description */}
+                  <div className="mb-6 flex-grow">
+                    <h3 className="text-lg font-bold text-slate-900 mb-1.5">
+                      {platform.name}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-slate-500">
+                      {platform.description[language]}
+                    </p>
+                  </div>
+
+                  {/* Footer action */}
+                  <div
+                    className={`flex items-center justify-between pt-4 border-t border-slate-100 text-sm font-medium transition-all duration-200 ${
+                      presentation.interactive
+                        ? "text-slate-400 group-hover:text-slate-700"
+                        : "text-amber-700"
+                    }`}
+                  >
+                    <span>{presentation.actionLabel}</span>
+                    {presentation.interactive ? (
+                      <div className="flex items-center gap-1 transition-transform duration-200 group-hover:translate-x-1">
+                        <ExternalLink size={14} />
+                        <ChevronRight size={14} />
+                      </div>
+                    ) : (
+                      <CircleOff size={15} aria-hidden="true" />
                     )}
                   </div>
                 </div>
+              </>
+            );
 
-                {/* Name & description */}
-                <div className="mb-6 flex-grow">
-                  <h3 className="text-lg font-bold text-slate-900 mb-1.5">
-                    {platform.name}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-slate-500">
-                      {platform.description[language]}
-                  </p>
+            if (!presentation.interactive) {
+              return (
+                <div
+                  key={platform.id}
+                  className="flex flex-col bg-slate-50/80 rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden opacity-75 cursor-not-allowed"
+                  aria-disabled="true"
+                >
+                  {cardContent}
                 </div>
+              );
+            }
 
-                {/* Footer action */}
-                <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-sm font-medium text-slate-400 transition-all duration-200 group-hover:text-slate-700">
-                  <span>{copy.open}</span>
-                  <div className="flex items-center gap-1 transition-transform duration-200 group-hover:translate-x-1">
-                    <ExternalLink size={14} />
-                    <ChevronRight size={14} />
-                  </div>
-                </div>
-              </div>
-            </a>
-          ))}
+            return (
+              <a
+                key={platform.id}
+                href={presentation.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col bg-white rounded-2xl border border-slate-200/80 hover:border-slate-300 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                onClick={() => handleCardClick(platform.name)}
+              >
+                {cardContent}
+              </a>
+            );
+          })}
 
           {filteredPlatforms.length === 0 && (
             <div className="col-span-full text-center py-16 text-slate-400 text-sm">
