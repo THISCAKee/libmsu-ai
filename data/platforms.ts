@@ -12,6 +12,7 @@ export type AiPlatform = {
   accentLight: string;
   embedRisk: "medium" | "high";
   logo: string;
+  maintenance?: boolean;
 };
 
 export const aiPlatforms: AiPlatform[] = [
@@ -29,6 +30,7 @@ export const aiPlatforms: AiPlatform[] = [
     accentLight: "#ecfdf5",
     embedRisk: "high",
     logo: "/logos/chatgpt.svg",
+    maintenance: true,
   },
   {
     id: "gemini",
